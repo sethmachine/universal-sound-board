@@ -43,3 +43,7 @@ mvn -Dmaven.repo.local=/Users/sdworman/.m2/personal-repository -Pmaven-central a
 * Persistence of audio wiring to a SQL database
     * probably 2 tables: one for each audio mixer used, and another for the wiring rules
     
+    
+## Derby stuff
+
+    

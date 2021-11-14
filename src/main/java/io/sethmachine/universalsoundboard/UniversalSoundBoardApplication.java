@@ -1,5 +1,6 @@
 package io.sethmachine.universalsoundboard;
 
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -9,12 +10,23 @@ import org.jdbi.v3.core.Jdbi;
 import com.hubspot.rosetta.jdbi3.RosettaRowMapperFactory;
 
 import io.dropwizard.Application;
+import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.jdbi3.JdbiFactory;
+import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.sethmachine.universalsoundboard.db.daos.FoobarDAO;
+import io.sethmachine.universalsoundboard.db.liquibase.LiquibaseMigrator;
 import io.sethmachine.universalsoundboard.health.TemplateHealthCheck;
 import io.sethmachine.universalsoundboard.resources.HelloWorldResource;
+import liquibase.Contexts;
+import liquibase.LabelExpression;
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.LiquibaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
 
 
 public class UniversalSoundBoardApplication extends Application<UniversalSoundBoardConfiguration> {
@@ -30,6 +42,12 @@ public class UniversalSoundBoardApplication extends Application<UniversalSoundBo
 
     @Override
     public void initialize(final Bootstrap<UniversalSoundBoardConfiguration> bootstrap) {
+        bootstrap.addBundle(new MigrationsBundle<UniversalSoundBoardConfiguration>() {
+            @Override
+            public DataSourceFactory getDataSourceFactory(UniversalSoundBoardConfiguration configuration) {
+                return configuration.getDataSourceFactory();
+            }
+        });
         // TODO: application initialization
 //        String dbUrl = "jdbc:derby:/Users/sdworman/foobardb;create=true";
 //        try {
@@ -45,7 +63,7 @@ public class UniversalSoundBoardApplication extends Application<UniversalSoundBo
 
     @Override
     public void run(final UniversalSoundBoardConfiguration configuration,
-                    final Environment environment) throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+                    final Environment environment) throws SQLException, LiquibaseException {
 
 //        Class.forName("org.apache.derby.jdbc.EmbeddedDriver").newInstance();
 //        DriverManager.getConnection(configuration.getDataSourceFactory().getUrl());
@@ -53,7 +71,7 @@ public class UniversalSoundBoardApplication extends Application<UniversalSoundBo
         final Jdbi jdbi = factory.build(environment, configuration.getDataSourceFactory(), "derby");
         jdbi.registerRowMapper(new RosettaRowMapperFactory());
         final FoobarDAO foobarDao = jdbi.onDemand(FoobarDAO.class);
-//        foobarDao.createSomethingTable();
+        LiquibaseMigrator.doMigrations(DriverManager.getConnection(configuration.getDataSourceFactory().getUrl()));
 
         final HelloWorldResource resource = new HelloWorldResource(
             configuration.getTemplate(),
@@ -64,5 +82,4 @@ public class UniversalSoundBoardApplication extends Application<UniversalSoundBo
         environment.healthChecks().register("template", healthCheck);
         environment.jersey().register(resource);
     }
-
 }
