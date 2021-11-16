@@ -1,32 +1,18 @@
 package io.sethmachine.universalsoundboard;
 
-import java.io.StringWriter;
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.jdbi.v3.core.Jdbi;
-
-import com.hubspot.rosetta.jdbi3.RosettaRowMapperFactory;
-
 import io.dropwizard.Application;
 import io.dropwizard.db.DataSourceFactory;
-import io.dropwizard.jdbi3.JdbiFactory;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import io.sethmachine.universalsoundboard.db.daos.FoobarDAO;
 import io.sethmachine.universalsoundboard.db.liquibase.LiquibaseMigrator;
+import io.sethmachine.universalsoundboard.guice.UniversalSoundBoardModule;
 import io.sethmachine.universalsoundboard.health.TemplateHealthCheck;
-import io.sethmachine.universalsoundboard.resources.HelloWorldResource;
-import liquibase.Contexts;
-import liquibase.LabelExpression;
-import liquibase.Liquibase;
-import liquibase.database.Database;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
-import liquibase.resource.ClassLoaderResourceAccessor;
+import ru.vyarus.dropwizard.guice.GuiceBundle;
 
 
 public class UniversalSoundBoardApplication extends Application<UniversalSoundBoardConfiguration> {
@@ -42,6 +28,12 @@ public class UniversalSoundBoardApplication extends Application<UniversalSoundBo
 
     @Override
     public void initialize(final Bootstrap<UniversalSoundBoardConfiguration> bootstrap) {
+
+        bootstrap.addBundle(GuiceBundle.builder()
+            .enableAutoConfig(getClass().getPackage().getName())
+            .modules(new UniversalSoundBoardModule())
+            .build());
+
         bootstrap.addBundle(new MigrationsBundle<UniversalSoundBoardConfiguration>() {
             @Override
             public DataSourceFactory getDataSourceFactory(UniversalSoundBoardConfiguration configuration) {
@@ -64,22 +56,19 @@ public class UniversalSoundBoardApplication extends Application<UniversalSoundBo
     @Override
     public void run(final UniversalSoundBoardConfiguration configuration,
                     final Environment environment) throws SQLException, LiquibaseException {
-
-//        Class.forName("org.apache.derby.jdbc.EmbeddedDriver").newInstance();
-//        DriverManager.getConnection(configuration.getDataSourceFactory().getUrl());
-        final JdbiFactory factory = new JdbiFactory();
-        final Jdbi jdbi = factory.build(environment, configuration.getDataSourceFactory(), "derby");
-        jdbi.registerRowMapper(new RosettaRowMapperFactory());
-        final FoobarDAO foobarDao = jdbi.onDemand(FoobarDAO.class);
+//        final JdbiFactory factory = new JdbiFactory();
+//        final Jdbi jdbi = factory.build(environment, configuration.getDataSourceFactory(), "derby");
+//        jdbi.registerRowMapper(new RosettaRowMapperFactory());
+//        final FoobarDAO foobarDao = jdbi.onDemand(FoobarDAO.class);
         LiquibaseMigrator.doMigrations(DriverManager.getConnection(configuration.getDataSourceFactory().getUrl()));
 
-        final HelloWorldResource resource = new HelloWorldResource(
-            configuration.getTemplate(),
-            configuration.getDefaultName()
-        );
+//        final HelloWorldResource resource = new HelloWorldResource(
+//            configuration.getTemplate(),
+//            configuration.getDefaultName()
+//        );
         final TemplateHealthCheck healthCheck =
             new TemplateHealthCheck(configuration.getTemplate());
         environment.healthChecks().register("template", healthCheck);
-        environment.jersey().register(resource);
+//        environment.jersey().register(resource);
     }
 }

@@ -34,6 +34,16 @@
 
   <dependencies>
     <dependency>
+      <groupId>ru.vyarus</groupId>
+      <artifactId>dropwizard-guicey</artifactId>
+      <version>5.4.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+      <version>5.0.1</version>
+    </dependency>
+    <dependency>
       <groupId>com.hubspot.rosetta</groupId>
       <artifactId>RosettaJdbi3</artifactId>
       <version>3.11.10</version>

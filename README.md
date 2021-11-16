@@ -22,7 +22,12 @@ mvn -Dmaven.repo.local=/Users/sdworman/.m2/personal-repository -Pmaven-central a
 
   mvn -Dmaven.repo.local=$HOME/.my/other/repository clean install
 
-  mvn -Dmaven.repo.local=/Users/sdworman/.m2/personal-repository -s ~/.m2/personal-settings.xml clean install 
+  mvn -Dmaven.repo.local=/Users/sdworman/.m2/personal-repository -s ~/.m2/personal-settings.xml clean install
+  
+  mvn -Dmaven.repo.local=/Users/sdworman/.m2/personal-repository -s ~/.m2/personal-settings.xml clean package
+  
+  
+  mvn -Dmaven.repo.local=/Users/sdworman/.m2/personal-repository -s ~/.m2/personal-settings.xml clean verify 
 
   -s ~/.m2/personal-settings.xml
 
@@ -31,6 +36,8 @@ mvn -Dmaven.repo.local=/Users/sdworman/.m2/personal-repository -Pmaven-central a
   -DarchetypeArtifactId=java-simple \
   -DarchetypeVersion=2.0.25
   
+  
+ org.apache.maven.plugins:maven-checkstyle-plugin:3.1.2:check
 ## Key requirements and functionality
 
 * List all audio mixers for either target or source
