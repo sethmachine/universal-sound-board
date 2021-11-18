@@ -56,10 +56,6 @@ public class UniversalSoundBoardApplication extends Application<UniversalSoundBo
     @Override
     public void run(final UniversalSoundBoardConfiguration configuration,
                     final Environment environment) throws SQLException, LiquibaseException {
-//        final JdbiFactory factory = new JdbiFactory();
-//        final Jdbi jdbi = factory.build(environment, configuration.getDataSourceFactory(), "derby");
-//        jdbi.registerRowMapper(new RosettaRowMapperFactory());
-//        final FoobarDAO foobarDao = jdbi.onDemand(FoobarDAO.class);
         LiquibaseMigrator.doMigrations(DriverManager.getConnection(configuration.getDataSourceFactory().getUrl()));
 
 //        final HelloWorldResource resource = new HelloWorldResource(

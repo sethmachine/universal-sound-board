@@ -10,8 +10,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.google.inject.Provides;
-
 import io.sethmachine.universalsoundboard.db.audio.mixer.AudioMixerRow;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;
 import io.sethmachine.universalsoundboard.db.daos.FoobarDAO;
