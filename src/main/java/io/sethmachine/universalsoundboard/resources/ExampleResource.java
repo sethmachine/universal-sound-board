@@ -1,8 +1,10 @@
 package io.sethmachine.universalsoundboard.resources;
 
+import io.sethmachine.universalsoundboard.db.audio.mixer.AudioMixerRow;
+import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;
+import io.sethmachine.universalsoundboard.db.daos.FoobarDAO;
 import java.util.List;
 import java.util.Optional;
-
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -10,17 +12,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import io.sethmachine.universalsoundboard.db.audio.mixer.AudioMixerRow;
-import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;
-import io.sethmachine.universalsoundboard.db.daos.FoobarDAO;
-
 @Path("/example")
 @Produces(MediaType.TEXT_PLAIN)
 public class ExampleResource {
 
   private final FoobarDAO foobarDAO;
   private final AudioMixerDAO audioMixerDAO;
-
 
   @Inject
   public ExampleResource(FoobarDAO foobarDAO, AudioMixerDAO audioMixerDAO) {
@@ -36,7 +33,7 @@ public class ExampleResource {
   @GET
   @Path("/insert-random")
   @Produces(MediaType.APPLICATION_JSON)
-  public Optional<AudioMixerRow> sayFoobar(){
+  public Optional<AudioMixerRow> sayFoobar() {
     audioMixerDAO.insert("foobar");
     return audioMixerDAO.findNameById(1);
   }
@@ -44,14 +41,16 @@ public class ExampleResource {
   @GET
   @Path("/audio-mixer/{audioMixerId}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Optional<AudioMixerRow> getAudioMixer(@PathParam("audioMixerId") int audioMixerId){
+  public Optional<AudioMixerRow> getAudioMixer(
+    @PathParam("audioMixerId") int audioMixerId
+  ) {
     return audioMixerDAO.findNameById(audioMixerId);
   }
 
   @GET
   @Path("/audio-mixers")
   @Produces(MediaType.APPLICATION_JSON)
-  public List<AudioMixerRow> getAudioMixer(){
+  public List<AudioMixerRow> getAudioMixer() {
     return audioMixerDAO.getAllAudioMixers();
   }
 }

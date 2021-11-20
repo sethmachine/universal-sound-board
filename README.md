@@ -15,29 +15,33 @@ To see your applications health enter url `http://localhost:8081/healthcheck`
 ## Maven commands for non HubSpot environment
 
 mvn -Dmaven.repo.local=/Users/sdworman/.m2/personal-repository -Pmaven-central archetype:generate \
-  -DarchetypeGroupId=io.dropwizard.archetypes \
-  -DarchetypeArtifactId=java-simple \
-  -DarchetypeVersion=2.0.25
+-DarchetypeGroupId=io.dropwizard.archetypes \
+-DarchetypeArtifactId=java-simple \
+-DarchetypeVersion=2.0.25
 
+mvn -Dmaven.repo.local=$HOME/.my/other/repository clean install
 
-  mvn -Dmaven.repo.local=$HOME/.my/other/repository clean install
+mvn -Dmaven.repo.local=/Users/sdworman/.m2/personal-repository -s ~/.m2/personal-settings.xml clean install
 
-  mvn -Dmaven.repo.local=/Users/sdworman/.m2/personal-repository -s ~/.m2/personal-settings.xml clean install
-  
-  mvn -Dmaven.repo.local=/Users/sdworman/.m2/personal-repository -s ~/.m2/personal-settings.xml clean package
-  
-  
-  mvn -Dmaven.repo.local=/Users/sdworman/.m2/personal-repository -s ~/.m2/personal-settings.xml clean verify 
+mvn -Dmaven.repo.local=/Users/sdworman/.m2/personal-repository -s ~/.m2/personal-settings.xml clean package
 
-  -s ~/.m2/personal-settings.xml
+curl -d name=john --data-urlencode passwd=@31&3*J https://www.example.com
 
-  mvn -s ~/.m2/personal-settings.xml -Dmaven.repo.local=/Users/sdworman/.m2/personal-repository -Pmaven-central archetype:generate \
-  -DarchetypeGroupId=io.dropwizard.archetypes \
-  -DarchetypeArtifactId=java-simple \
-  -DarchetypeVersion=2.0.25
-  
-  
- org.apache.maven.plugins:maven-checkstyle-plugin:3.1.2:check
+mvn prettier:check -Dmaven.repo.local=/Users/sdworman/.m2/personal-repository -s ~/.m2/personal-settings.xml
+
+mvn prettier:write -Dmaven.repo.local=/Users/sdworman/.m2/personal-repository -s ~/.m2/personal-settings.xml
+
+mvn -Dmaven.repo.local=/Users/sdworman/.m2/personal-repository -s ~/.m2/personal-settings.xml clean verify
+
+-s ~/.m2/personal-settings.xml
+
+mvn -s ~/.m2/personal-settings.xml -Dmaven.repo.local=/Users/sdworman/.m2/personal-repository -Pmaven-central archetype:generate \
+-DarchetypeGroupId=io.dropwizard.archetypes \
+-DarchetypeArtifactId=java-simple \
+-DarchetypeVersion=2.0.25
+
+org.apache.maven.plugins:maven-checkstyle-plugin:3.1.2:check
+
 ## Key requirements and functionality
 
 * List all audio mixers for either target or source
@@ -49,8 +53,12 @@ mvn -Dmaven.repo.local=/Users/sdworman/.m2/personal-repository -Pmaven-central a
 * Unpause/unmute the target, aka unmute microphone
 * Persistence of audio wiring to a SQL database
     * probably 2 tables: one for each audio mixer used, and another for the wiring rules
-    
-    
+
 ## Derby stuff
 
-    
+## curl HTTP requests
+
+VB-Cable
+
+curl -G --data-urlencode audioMixerName="VB-Cable" localhost:8080/audio-mixer-metadata/supported-audio-formats
+

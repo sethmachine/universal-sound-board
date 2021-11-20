@@ -1,67 +1,166 @@
 package io.sethmachine.universalsoundboard.service;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.AudioMixerDescriptions;
+import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.AudioMixerSupportedFormats;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerDescription;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerType;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.query.AudioMixerMetadataQuery;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import javax.inject.Inject;
+import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
 import javax.sound.sampled.Mixer;
 import javax.sound.sampled.Mixer.Info;
-
-import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.AudioMixerDescriptions;
-import io.sethmachine.universalsoundboard.core.model.audiomixers.AudioMixerDescription;
-import io.sethmachine.universalsoundboard.core.model.audiomixers.AudioMixerType;
 
 public class AudioMixerMetadataService {
 
   @Inject
-  public AudioMixerMetadataService() {
+  public AudioMixerMetadataService() {}
 
+  public AudioMixerDescriptions getAudioMixerDescriptions(AudioMixerMetadataQuery query) {
+    return AudioMixerDescriptions
+      .builder()
+      .setAudioMixerDescriptions(getAllMatchingAudioMixerDescriptions(query))
+      .build();
   }
 
-  public AudioMixerDescriptions getAudioMixerDescriptions(Optional<AudioMixerType> audioMixerType) {
-    return AudioMixerDescriptions.builder()
-        .setAudioMixerDescriptions(getAllAudioMixerDescriptions(audioMixerType))
-        .build();
+  public Optional<AudioMixerSupportedFormats> getSingleAudioMixerSupportedFormats(
+    AudioMixerMetadataQuery query
+  ) {
+    return findSingleAudioMixerSupportedFormats(query);
   }
 
-  private List<AudioMixerDescription> getAllAudioMixerDescriptions(Optional<AudioMixerType> audioMixerType) {
-    return Stream.of(AudioSystem.getMixerInfo())
-        .filter(info -> audioMixerSupportsAudioMixerType(info, audioMixerType))
-        .map(info ->
-        AudioMixerDescription.builder()
-            .setName(info.getName())
-            .setVendor(info.getVendor())
-            .setDescription(info.getDescription())
-            .setVersion(info.getVersion())
-            .build())
-        .sorted()
-        .collect(Collectors.toList());
+  private Optional<AudioMixerSupportedFormats> findSingleAudioMixerSupportedFormats(
+    AudioMixerMetadataQuery query
+  ) {
+    return Stream
+      .of(AudioSystem.getMixerInfo())
+      .filter(info -> audioMixerInfoMatchesQuery(info, query))
+      .findFirst()
+      .map(info -> {
+        Map<AudioMixerType, ImmutableMap<String, List<AudioFormat>>> formats = buildAudioMixerFormats(
+          info
+        );
+        return AudioMixerSupportedFormats
+          .builder()
+          .setAudioMixerDescription(buildAudioMixerDescription(info))
+          .setSinkAudioFormats(
+            Objects.requireNonNull(
+              formats.getOrDefault(AudioMixerType.SINK, ImmutableMap.of())
+            )
+          )
+          .setSourceAudioFormats(
+            Objects.requireNonNull(
+              formats.getOrDefault(AudioMixerType.SOURCE, ImmutableMap.of())
+            )
+          )
+          .build();
+      });
   }
 
-  private boolean audioMixerSupportsAudioMixerType(Info audioMixerInfo, Optional<AudioMixerType> audioMixerType){
-    if (audioMixerType.isEmpty()){
-      return true;
+  private List<AudioMixerDescription> getAllMatchingAudioMixerDescriptions(
+    AudioMixerMetadataQuery query
+  ) {
+    return Stream
+      .of(AudioSystem.getMixerInfo())
+      .filter(info -> audioMixerInfoMatchesQuery(info, query))
+      .map(this::buildAudioMixerDescription)
+      .sorted()
+      .collect(Collectors.toList());
+  }
+
+  private AudioMixerDescription buildAudioMixerDescription(Info audioMixerInfo) {
+    return AudioMixerDescription
+      .builder()
+      .setName(audioMixerInfo.getName())
+      .setVendor(audioMixerInfo.getVendor())
+      .setDescription(audioMixerInfo.getDescription())
+      .setVersion(audioMixerInfo.getVersion())
+      .build();
+  }
+
+  private boolean audioMixerInfoMatchesQuery(
+    Info audioMixerInfo,
+    AudioMixerMetadataQuery query
+  ) {
+    if (query.getAudioMixerName().isPresent()) {
+      if (!audioMixerInfo.getName().equals(query.getAudioMixerName().get())) {
+        return false;
+      }
     }
+    if (query.getAudioMixerType().isPresent()) {
+      if (
+        !determineSupportedAudioMixerTypes(audioMixerInfo)
+          .contains(query.getAudioMixerType().get())
+      ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private ImmutableSet<AudioMixerType> determineSupportedAudioMixerTypes(
+    Info audioMixerInfo
+  ) {
     Mixer audioMixer = AudioSystem.getMixer(audioMixerInfo);
-    if (audioMixerType.get() == AudioMixerType.SINK){
-      return Stream.of(audioMixer.getTargetLineInfo()).findAny().isPresent();
+    ImmutableSet.Builder<AudioMixerType> builder = ImmutableSet.builder();
+    if (Stream.of(audioMixer.getTargetLineInfo()).findAny().isPresent()) {
+      builder.add(AudioMixerType.SINK);
     }
-    return Stream.of(audioMixer.getSourceLineInfo()).findAny().isPresent();
+    if (Stream.of(audioMixer.getSourceLineInfo()).findAny().isPresent()) {
+      builder.add(AudioMixerType.SOURCE);
+    }
+    return builder.build();
   }
 
-//  public void getAudioMixerFormats(Mixer mixer, AudioMixerType audioMixerType){
-//    if (audioMixerType == AudioMixerType.SINK){
-//      return mixer.getTargetLineInfo()
-//    }
-//  }
-
-  private Optional<Mixer> getAudioMixerByName(String name){
-    return Stream.of(AudioSystem.getMixerInfo())
-        .filter(info -> info.getName().equals(name))
-        .map(info -> AudioSystem.getMixer(info)).findFirst();
+  private ImmutableMap<AudioMixerType, ImmutableMap<String, List<AudioFormat>>> buildAudioMixerFormats(
+    Info audioMixerInfo
+  ) {
+    ImmutableMap.Builder<AudioMixerType, ImmutableMap<String, List<AudioFormat>>> builder = ImmutableMap.builder();
+    Mixer audioMixer = AudioSystem.getMixer(audioMixerInfo);
+    builder.put(
+      AudioMixerType.SINK,
+      Stream
+        .of(audioMixer.getTargetLineInfo())
+        .map(targetInfo -> {
+          final DataLine.Info dataLineInfo = (DataLine.Info) targetInfo;
+          return Map.entry(
+            dataLineInfo.toString(),
+            filterAudioFormats(dataLineInfo.getFormats())
+          );
+        })
+        .collect(ImmutableMap.toImmutableMap(Entry::getKey, Entry::getValue))
+    );
+    builder.put(
+      AudioMixerType.SOURCE,
+      Stream
+        .of(audioMixer.getSourceLineInfo())
+        .map(targetInfo -> {
+          final DataLine.Info dataLineInfo = (DataLine.Info) targetInfo;
+          return Map.entry(
+            dataLineInfo.toString(),
+            filterAudioFormats(dataLineInfo.getFormats())
+          );
+        })
+        .collect(ImmutableMap.toImmutableMap(Entry::getKey, Entry::getValue))
+    );
+    return builder.build();
   }
 
+  private List<AudioFormat> filterAudioFormats(AudioFormat[] audioFormats) {
+    return Stream
+      .of(audioFormats)
+      .filter(audioFormat -> audioFormat.getFrameRate() > 0)
+      .collect(ImmutableList.toImmutableList());
+  }
 }

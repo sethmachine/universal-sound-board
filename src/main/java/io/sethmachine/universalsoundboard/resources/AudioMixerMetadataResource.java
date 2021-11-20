@@ -1,7 +1,11 @@
 package io.sethmachine.universalsoundboard.resources;
 
+import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.AudioMixerDescriptions;
+import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.AudioMixerSupportedFormats;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerType;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.query.AudioMixerMetadataQuery;
+import io.sethmachine.universalsoundboard.service.AudioMixerMetadataService;
 import java.util.Optional;
-
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -10,16 +14,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.AudioMixerDescriptions;
-import io.sethmachine.universalsoundboard.core.model.audiomixers.AudioMixerType;
-import io.sethmachine.universalsoundboard.service.AudioMixerMetadataService;
-
 @Path("/audio-mixer-metadata")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class AudioMixerMetadataResource {
-  private final AudioMixerMetadataService audioMixerMetadataService;
 
+  private final AudioMixerMetadataService audioMixerMetadataService;
 
   @Inject
   public AudioMixerMetadataResource(AudioMixerMetadataService audioMixerMetadataService) {
@@ -29,8 +29,20 @@ public class AudioMixerMetadataResource {
   @GET
   @Path("/descriptions")
   public AudioMixerDescriptions getAudioMixerDescriptions(
-      @QueryParam("audioMixerType") Optional<AudioMixerType> audioMixerType
+    @QueryParam("audioMixerType") Optional<AudioMixerType> audioMixerType
   ) {
-    return audioMixerMetadataService.getAudioMixerDescriptions(audioMixerType);
+    return audioMixerMetadataService.getAudioMixerDescriptions(
+      AudioMixerMetadataQuery.builder().setAudioMixerType(audioMixerType).build()
+    );
+  }
+
+  @GET
+  @Path("/supported-audio-formats")
+  public Optional<AudioMixerSupportedFormats> getSupportedAudioMixerFormats(
+    @QueryParam("audioMixerName") String audioMixerName
+  ) {
+    return audioMixerMetadataService.getSingleAudioMixerSupportedFormats(
+      AudioMixerMetadataQuery.builder().setAudioMixerName(audioMixerName).build()
+    );
   }
 }

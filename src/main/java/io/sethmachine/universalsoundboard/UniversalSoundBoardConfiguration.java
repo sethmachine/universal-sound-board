@@ -1,16 +1,15 @@
 package io.sethmachine.universalsoundboard;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
 import io.dropwizard.db.DataSourceFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.validator.constraints.*;
-
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import javax.validation.constraints.NotEmpty;
+import org.hibernate.validator.constraints.*;
 
 public class UniversalSoundBoardConfiguration extends Configuration {
+
   @NotEmpty
   private String template;
 

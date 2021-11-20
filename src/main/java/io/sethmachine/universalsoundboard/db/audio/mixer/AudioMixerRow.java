@@ -3,6 +3,7 @@ package io.sethmachine.universalsoundboard.db.audio.mixer;
 import com.hubspot.rosetta.annotations.RosettaProperty;
 
 public class AudioMixerRow {
+
   public AudioMixerRow(int id) {
     this.id = id;
   }
@@ -10,8 +11,7 @@ public class AudioMixerRow {
   private int id;
   private String name;
 
-  public AudioMixerRow(){
-  }
+  public AudioMixerRow() {}
 
   @RosettaProperty("NAME")
   public String getName() {
@@ -21,7 +21,6 @@ public class AudioMixerRow {
   public void setName(String name) {
     this.name = name;
   }
-
 
   @RosettaProperty("ID")
   public int getId() {
