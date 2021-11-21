@@ -7,6 +7,6 @@ import org.immutables.value.Value.Immutable;
 
 @Immutable
 @HubSpotStyle
-public interface AudioMixerDescriptionsIF {
+public interface AudioMixerDescriptionsResponseIF {
   List<AudioMixerDescription> getAudioMixerDescriptions();
 }

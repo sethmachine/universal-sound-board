@@ -1,7 +1,7 @@
 package io.sethmachine.universalsoundboard.resources;
 
-import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.AudioMixerDescriptions;
-import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.AudioMixerSupportedFormats;
+import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.AudioMixerDescriptionsResponse;
+import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.AudioMixerFormatsResponse;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerType;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.query.AudioMixerMetadataQuery;
 import io.sethmachine.universalsoundboard.service.AudioMixerMetadataService;
@@ -28,7 +28,7 @@ public class AudioMixerMetadataResource {
 
   @GET
   @Path("/descriptions")
-  public AudioMixerDescriptions getAudioMixerDescriptions(
+  public AudioMixerDescriptionsResponse getAudioMixerDescriptions(
     @QueryParam("audioMixerType") Optional<AudioMixerType> audioMixerType
   ) {
     return audioMixerMetadataService.getAudioMixerDescriptions(
@@ -37,8 +37,8 @@ public class AudioMixerMetadataResource {
   }
 
   @GET
-  @Path("/supported-audio-formats")
-  public Optional<AudioMixerSupportedFormats> getSupportedAudioMixerFormats(
+  @Path("/audio-formats")
+  public Optional<AudioMixerFormatsResponse> getSupportedAudioMixerFormats(
     @QueryParam("audioMixerName") String audioMixerName
   ) {
     return audioMixerMetadataService.getSingleAudioMixerSupportedFormats(

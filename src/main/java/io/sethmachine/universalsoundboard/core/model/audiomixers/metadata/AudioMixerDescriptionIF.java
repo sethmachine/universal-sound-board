@@ -8,8 +8,11 @@ import org.immutables.value.Value.Immutable;
 @HubSpotStyle
 public interface AudioMixerDescriptionIF extends Comparable<AudioMixerDescriptionIF> {
   String getName();
+
   String getVendor();
+
   String getDescription();
+
   String getVersion();
 
   @Override

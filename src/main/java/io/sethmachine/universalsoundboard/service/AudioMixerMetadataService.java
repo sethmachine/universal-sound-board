@@ -3,8 +3,8 @@ package io.sethmachine.universalsoundboard.service;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.AudioMixerDescriptions;
-import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.AudioMixerSupportedFormats;
+import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.AudioMixerDescriptionsResponse;
+import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.AudioMixerFormatsResponse;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerDescription;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerType;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.query.AudioMixerMetadataQuery;
@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.inject.Inject;
@@ -21,37 +22,54 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.Mixer;
 import javax.sound.sampled.Mixer.Info;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AudioMixerMetadataService {
+
+  private static final Logger LOG = LoggerFactory.getLogger(
+    AudioMixerMetadataService.class
+  );
 
   @Inject
   public AudioMixerMetadataService() {}
 
-  public AudioMixerDescriptions getAudioMixerDescriptions(AudioMixerMetadataQuery query) {
-    return AudioMixerDescriptions
+  public AudioMixerDescriptionsResponse getAudioMixerDescriptions(
+    AudioMixerMetadataQuery query
+  ) {
+    return AudioMixerDescriptionsResponse
       .builder()
       .setAudioMixerDescriptions(getAllMatchingAudioMixerDescriptions(query))
       .build();
   }
 
-  public Optional<AudioMixerSupportedFormats> getSingleAudioMixerSupportedFormats(
+  public Optional<AudioMixerFormatsResponse> getSingleAudioMixerSupportedFormats(
     AudioMixerMetadataQuery query
   ) {
     return findSingleAudioMixerSupportedFormats(query);
   }
 
-  private Optional<AudioMixerSupportedFormats> findSingleAudioMixerSupportedFormats(
+  private Optional<AudioMixerFormatsResponse> findSingleAudioMixerSupportedFormats(
     AudioMixerMetadataQuery query
   ) {
+    AtomicInteger count = new AtomicInteger();
     return Stream
       .of(AudioSystem.getMixerInfo())
       .filter(info -> audioMixerInfoMatchesQuery(info, query))
+      .peek(info -> count.incrementAndGet())
       .findFirst()
       .map(info -> {
+        if (count.get() > 1) {
+          LOG.warn(
+            "Matched {} audio mixers to query but only expected 1: query {}",
+            count.get(),
+            query
+          );
+        }
         Map<AudioMixerType, ImmutableMap<String, List<AudioFormat>>> formats = buildAudioMixerFormats(
           info
         );
-        return AudioMixerSupportedFormats
+        return AudioMixerFormatsResponse
           .builder()
           .setAudioMixerDescription(buildAudioMixerDescription(info))
           .setSinkAudioFormats(

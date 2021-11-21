@@ -1,10 +1,10 @@
-package io.sethmachine.universalsoundboard.core.model.audiomixers.metadata;
+package io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.mixins;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
 import javax.sound.sampled.AudioFormat.Encoding;
 
-public abstract class AudioFormatMixIn {
+public abstract class AudioFormatMixInBase {
 
   @JsonProperty("encoding")
   abstract Encoding getEncoding();

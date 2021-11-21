@@ -9,7 +9,7 @@ import org.immutables.value.Value.Immutable;
 
 @Immutable
 @HubSpotStyle
-public interface AudioMixerSupportedFormatsIF {
+public interface AudioMixerFormatsResponseIF {
   AudioMixerDescription getAudioMixerDescription();
 
   Map<String, List<AudioFormat>> getSinkAudioFormats();

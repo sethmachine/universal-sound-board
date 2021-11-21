@@ -56,9 +56,18 @@ org.apache.maven.plugins:maven-checkstyle-plugin:3.1.2:check
 
 ## Derby stuff
 
+Derby automatically capitalizes all columns/tables names by default. So when you use Rosetta you should use Rosetta property to make this mapping explicit.
+
+Supported data types: https://db.apache.org/derby/docs/10.7/ref/crefsqlj31068.html
+
+Use blob for raw JSON strings
+
 ## curl HTTP requests
 
 VB-Cable
 
 curl -G --data-urlencode audioMixerName="VB-Cable" localhost:8080/audio-mixer-metadata/supported-audio-formats
+
+curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixer --data '{"bigEndian": true, "encoding": {
+"name": "PCM_SIGNED"}, "sampleRate": 48000.0, "sampleSizeInBits": 16, "channels": 2, "frameSize": 4, "frameRate": 48000.0 }' 
 
