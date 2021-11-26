@@ -36,6 +36,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.hubspot.rosetta</groupId>
+      <artifactId>RosettaJdbi</artifactId>
+      <version>3.11.10</version>
+    </dependency>
+    <dependency>
       <groupId>com.hubspot.immutables</groupId>
       <artifactId>hubspot-style</artifactId>
       <version>1.2</version>

@@ -66,8 +66,14 @@ Use blob for raw JSON strings
 
 VB-Cable
 
-curl -G --data-urlencode audioMixerName="VB-Cable" localhost:8080/audio-mixer-metadata/supported-audio-formats
+curl -G --data-urlencode audioMixerName="VB-Cable" localhost:8080/audio-mixer-metadata/audio-formats
 
 curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixer --data '{"bigEndian": true, "encoding": {
-"name": "PCM_SIGNED"}, "sampleRate": 48000.0, "sampleSizeInBits": 16, "channels": 2, "frameSize": 4, "frameRate": 48000.0 }' 
+"name": "PCM_SIGNED"}, "sampleRate": 48000.0, "sampleSizeInBits": 16, "channels": 2, "frameSize": 4, "frameRate": 48000.0 }'
+
+curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixers --data '{"name": "VB-Cable", "vendor": "VB Audio", "description": "Direct Audio Device: VB-Cable", "version": "Unknown Version", "audioMixerType": "SINK", "audioFormat": {"bigEndian": true, "encoding": {"name": "PCM_SIGNED"}, "sampleRate": 48000.0, "sampleSizeInBits": 16, "channels": 2, "frameSize": 4, "frameRate":
+48000.0 }}' 
+
+curl -X GET -H "Content-Type: application/json" localhost:8080/audio-mixers/1
+
 

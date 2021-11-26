@@ -8,7 +8,7 @@ logging:
   appenders:
     # Log warnings and errors to stderr
     - type: console
-      threshold: INFO
+      threshold: DEBUG
       target: stdout
 
 database:
