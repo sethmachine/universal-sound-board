@@ -1,5 +1,6 @@
 package io.sethmachine.universalsoundboard.resources;
 
+import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.AudioMixerId;
 import io.sethmachine.universalsoundboard.db.audiomixer.AudioMixerInsert;
 import io.sethmachine.universalsoundboard.db.audiomixer.AudioMixerRow;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;
@@ -28,9 +29,8 @@ public class AudioMixersResource {
   }
 
   @POST
-  public AudioMixerInsert createAudioMixer(AudioMixerInsert audioMixerInsert) {
-    audioMixerDAO.insert(audioMixerInsert);
-    return audioMixerInsert;
+  public AudioMixerId createAudioMixer(AudioMixerInsert audioMixerInsert) {
+    return AudioMixerId.builder().setId(audioMixerDAO.insert(audioMixerInsert)).build();
   }
 
   @GET
@@ -40,23 +40,4 @@ public class AudioMixersResource {
   ) {
     return audioMixerDAO.get(audioMixerId);
   }
-  //  @GET
-  //  @Path("/descriptions")
-  //  public AudioMixerDescriptions getAudioMixerDescriptions(
-  //      @QueryParam("audioMixerType") Optional<AudioMixerType> audioMixerType
-  //  ) {
-  //    return audioMixerMetadataService.getAudioMixerDescriptions(
-  //        AudioMixerMetadataQuery.builder().setAudioMixerType(audioMixerType).build()
-  //    );
-  //  }
-  //
-  //  @GET
-  //  @Path("/audio-formats")
-  //  public Optional<AudioMixerFormatsResponse> getSupportedAudioMixerFormats(
-  //      @QueryParam("audioMixerName") String audioMixerName
-  //  ) {
-  //    return audioMixerMetadataService.getSingleAudioMixerSupportedFormats(
-  //        AudioMixerMetadataQuery.builder().setAudioMixerName(audioMixerName).build()
-  //    );
-  //  }
 }

@@ -19,9 +19,11 @@ create TABLE audio_mixer (
 
 --changeset sethmachine:2
 create TABLE audio_mixer_wiring (
-  sinkAudioMixerId INTEGER NOT NULL, -- Identifies the audio mixer sink used to write audio to a source
-  sourceAudioMixerId INTEGER NOT NULL, -- Identifies the audio mixer source that the sink writes audio to
-  PRIMARY KEY (sinkAudioMixerId, sourceAudioMixerId)
+  "sinkId" INTEGER NOT NULL, -- Identifies the audio mixer sink (row in audio_mixer table) used to write audio to a source
+  "sinkName" VARCHAR(255) NOT NULL, -- The human readable name of the audio mixer sink
+  "sourceId" INTEGER NOT NULL, -- Identifies the audio mixer source (row in audio_mixer table) that the sink writes audio to
+  "sourceName" VARCHAR(255) NOT NULL, -- The human readable name of the audio mixer source
+  PRIMARY KEY ("sinkId", "sourceId")
 );
 
 --rollback DROP TABLE audio_mixer_wiring;

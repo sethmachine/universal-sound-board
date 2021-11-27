@@ -71,9 +71,20 @@ curl -G --data-urlencode audioMixerName="VB-Cable" localhost:8080/audio-mixer-me
 curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixer --data '{"bigEndian": true, "encoding": {
 "name": "PCM_SIGNED"}, "sampleRate": 48000.0, "sampleSizeInBits": 16, "channels": 2, "frameSize": 4, "frameRate": 48000.0 }'
 
+Insert an audio mixer device:
+
 curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixers --data '{"name": "VB-Cable", "vendor": "VB Audio", "description": "Direct Audio Device: VB-Cable", "version": "Unknown Version", "audioMixerType": "SINK", "audioFormat": {"bigEndian": true, "encoding": {"name": "PCM_SIGNED"}, "sampleRate": 48000.0, "sampleSizeInBits": 16, "channels": 2, "frameSize": 4, "frameRate":
 48000.0 }}' 
 
+curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixers --data '{"name": "VB-Cable-Source", "vendor": "VB Audio", "description": "Direct Audio Device: VB-Cable", "version": "Unknown Version", "audioMixerType": "SOURCE", "audioFormat": {"bigEndian": true, "encoding": {"name": "PCM_SIGNED"}, "sampleRate": 48000.0, "sampleSizeInBits": 16, "channels": 2, "frameSize": 4, "frameRate":
+48000.0 }}'
+
 curl -X GET -H "Content-Type: application/json" localhost:8080/audio-mixers/1
+
+Wire audio devices together:
+
+curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixer-wiring --data '{"sinkId":1,
+"sourceId":2}' 
+
 
 

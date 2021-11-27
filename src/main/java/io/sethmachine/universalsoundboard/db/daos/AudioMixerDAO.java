@@ -5,6 +5,7 @@ import io.sethmachine.universalsoundboard.db.audiomixer.AudioMixerInsert;
 import io.sethmachine.universalsoundboard.db.audiomixer.AudioMixerRow;
 import java.util.Optional;
 import org.jdbi.v3.sqlobject.customizer.Bind;
+import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
@@ -21,7 +22,8 @@ public interface AudioMixerDAO {
     AUDIO_MIXER_INSERT_BINDING_FIELDS +
     ")"
   )
-  void insert(@BindWithRosetta AudioMixerInsert insert);
+  @GetGeneratedKeys
+  int insert(@BindWithRosetta AudioMixerInsert insert);
 
   @SqlQuery("SELECT * FROM audio_mixer WHERE \"id\" = :id")
   Optional<AudioMixerRow> get(@Bind("id") int id);

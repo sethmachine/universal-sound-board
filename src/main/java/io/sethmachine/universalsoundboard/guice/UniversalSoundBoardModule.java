@@ -13,6 +13,7 @@ import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.jdbi3.JdbiFactory;
 import io.sethmachine.universalsoundboard.UniversalSoundBoardConfiguration;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;
+import io.sethmachine.universalsoundboard.db.daos.AudioMixerWiringDAO;
 import io.sethmachine.universalsoundboard.db.daos.FoobarDAO;
 import org.jdbi.v3.core.Jdbi;
 import org.skife.jdbi.v2.DBI;
@@ -48,5 +49,10 @@ public class UniversalSoundBoardModule extends DropwizardAwareModule<Configurati
   @Provides
   public AudioMixerDAO provideAudioMixerDAO(@Named("JDBI") Jdbi jdbi) {
     return jdbi.onDemand(AudioMixerDAO.class);
+  }
+
+  @Provides
+  public AudioMixerWiringDAO provideAudioMixerWiringDAO(@Named("JDBI") Jdbi jdbi) {
+    return jdbi.onDemand(AudioMixerWiringDAO.class);
   }
 }
