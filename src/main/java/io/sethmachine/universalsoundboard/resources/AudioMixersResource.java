@@ -1,12 +1,10 @@
 package io.sethmachine.universalsoundboard.resources;
 
-import java.util.Optional;
-
 import io.sethmachine.universalsoundboard.db.audiomixer.AudioMixerInsert;
 import io.sethmachine.universalsoundboard.db.audiomixer.AudioMixerRow;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;
 import io.sethmachine.universalsoundboard.service.AudioMixerMetadataService;
-
+import java.util.Optional;
 import javax.inject.Inject;
 import javax.sound.sampled.AudioFormat;
 import javax.ws.rs.Consumes;
@@ -37,7 +35,9 @@ public class AudioMixersResource {
 
   @GET
   @Path("/{audioMixerId}")
-  public Optional<AudioMixerRow> getAudioMixer(@PathParam("audioMixerId") int audioMixerId) {
+  public Optional<AudioMixerRow> getAudioMixer(
+    @PathParam("audioMixerId") int audioMixerId
+  ) {
     return audioMixerDAO.get(audioMixerId);
   }
   //  @GET

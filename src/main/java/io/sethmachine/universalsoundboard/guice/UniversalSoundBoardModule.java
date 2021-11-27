@@ -16,7 +16,6 @@ import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;
 import io.sethmachine.universalsoundboard.db.daos.FoobarDAO;
 import org.jdbi.v3.core.Jdbi;
 import org.skife.jdbi.v2.DBI;
-
 import ru.vyarus.dropwizard.guice.module.support.DropwizardAwareModule;
 
 public class UniversalSoundBoardModule extends DropwizardAwareModule<Configuration> {
@@ -30,9 +29,11 @@ public class UniversalSoundBoardModule extends DropwizardAwareModule<Configurati
       "derby"
     );
     jdbi.registerRowMapper(new RosettaRowMapperFactory());
-    jdbi.getConfig().get(RosettaObjectMapper.class).setObjectMapper(bootstrap().getObjectMapper());
+    jdbi
+      .getConfig()
+      .get(RosettaObjectMapper.class)
+      .setObjectMapper(bootstrap().getObjectMapper());
     bind(Jdbi.class).annotatedWith(Names.named("JDBI")).toInstance(jdbi);
-
 
     configuration();
     environment();
