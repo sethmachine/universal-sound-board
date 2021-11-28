@@ -1,8 +1,7 @@
 package io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.concurrent;
 
-import org.immutables.value.Value.Immutable;
-
 import com.hubspot.immutables.style.HubSpotStyle;
+import org.immutables.value.Value.Immutable;
 
 @Immutable
 @HubSpotStyle

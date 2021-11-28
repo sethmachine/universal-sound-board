@@ -1,15 +1,12 @@
 package io.sethmachine.universalsoundboard.db.daos;
 
 import com.hubspot.rosetta.jdbi3.BindWithRosetta;
-import io.sethmachine.universalsoundboard.db.audiomixer.AudioMixerInsert;
-import io.sethmachine.universalsoundboard.db.audiomixer.AudioMixerRow;
-import io.sethmachine.universalsoundboard.db.audiomixer.wiring.AudioMixerWiringInsert;
-import io.sethmachine.universalsoundboard.db.audiomixer.wiring.AudioMixerWiringRow;
+import io.sethmachine.universalsoundboard.db.model.audiomixer.wiring.AudioMixerWiringInsert;
+import io.sethmachine.universalsoundboard.db.model.audiomixer.wiring.AudioMixerWiringRow;
 import java.util.List;
 import java.util.Optional;
 import org.jdbi.v3.sqlobject.SingleValue;
 import org.jdbi.v3.sqlobject.customizer.Bind;
-import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 

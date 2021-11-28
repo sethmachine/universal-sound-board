@@ -1,10 +1,12 @@
 package io.sethmachine.universalsoundboard.resources;
 
 import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.AudioMixerDescriptionsResponse;
-import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.AudioMixerFormatsResponse;
+import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.SingleAudioMixerDescriptionAndFormatsResponse;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerDescriptionAndFormat;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerType;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.query.AudioMixerMetadataQuery;
-import io.sethmachine.universalsoundboard.service.AudioMixerMetadataService;
+import io.sethmachine.universalsoundboard.service.api.AudioMixerMetadataApiService;
+import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -19,11 +21,13 @@ import javax.ws.rs.core.MediaType;
 @Consumes(MediaType.APPLICATION_JSON)
 public class AudioMixerMetadataResource {
 
-  private final AudioMixerMetadataService audioMixerMetadataService;
+  private final AudioMixerMetadataApiService audioMixerMetadataApiService;
 
   @Inject
-  public AudioMixerMetadataResource(AudioMixerMetadataService audioMixerMetadataService) {
-    this.audioMixerMetadataService = audioMixerMetadataService;
+  public AudioMixerMetadataResource(
+    AudioMixerMetadataApiService audioMixerMetadataApiService
+  ) {
+    this.audioMixerMetadataApiService = audioMixerMetadataApiService;
   }
 
   @GET
@@ -31,18 +35,27 @@ public class AudioMixerMetadataResource {
   public AudioMixerDescriptionsResponse getAudioMixerDescriptions(
     @QueryParam("audioMixerType") Optional<AudioMixerType> audioMixerType
   ) {
-    return audioMixerMetadataService.getAudioMixerDescriptions(
+    return audioMixerMetadataApiService.getAudioMixerDescriptions(
       AudioMixerMetadataQuery.builder().setAudioMixerType(audioMixerType).build()
     );
   }
 
   @GET
   @Path("/audio-formats")
-  public Optional<AudioMixerFormatsResponse> getSupportedAudioMixerFormats(
-    @QueryParam("audioMixerName") String audioMixerName
+  public SingleAudioMixerDescriptionAndFormatsResponse getSupportedAudioMixerFormats(
+    @QueryParam("audioMixerName") String audioMixerName,
+    @QueryParam("audioMixerType") Optional<AudioMixerType> audioMixerType
   ) {
-    return audioMixerMetadataService.getSingleAudioMixerSupportedFormats(
-      AudioMixerMetadataQuery.builder().setAudioMixerName(audioMixerName).build()
-    );
+    if (audioMixerName == null) {
+      throw new IllegalArgumentException(
+        "An audio mixer name must be specified when requesting metadata about a specific audio mixer"
+      );
+    }
+    AudioMixerMetadataQuery query = AudioMixerMetadataQuery
+      .builder()
+      .setAudioMixerName(audioMixerName)
+      .setAudioMixerType(audioMixerType)
+      .build();
+    return audioMixerMetadataApiService.getSingleAudioMixerSupportedFormats(query);
   }
 }

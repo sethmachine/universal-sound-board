@@ -1,21 +1,17 @@
 package io.sethmachine.universalsoundboard.service;
 
-import java.util.Optional;
-import java.util.concurrent.ThreadPoolExecutor;
-
-import javax.inject.Inject;
-import javax.ws.rs.NotFoundException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.inject.name.Named;
-
 import io.sethmachine.universalsoundboard.core.concurrent.SinkAudioMixerRunnable;
 import io.sethmachine.universalsoundboard.core.concurrent.SinkAudioMixerRunnableFactory;
-import io.sethmachine.universalsoundboard.db.audiomixer.AudioMixerRow;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerWiringDAO;
+import io.sethmachine.universalsoundboard.db.model.audiomixer.AudioMixerRow;
+import java.util.Optional;
+import java.util.concurrent.ThreadPoolExecutor;
+import javax.inject.Inject;
+import javax.ws.rs.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SinkAudioMixerRunnableService {
 
@@ -41,25 +37,31 @@ public class SinkAudioMixerRunnableService {
     this.sinkThreadPoolExecutor = sinkThreadPoolExecutor;
   }
 
-  public void startSink(int sinkId){
+  public void startSink(int sinkId) {
     AudioMixerRow sinkRow = validateAndGetSink(sinkId);
-    SinkAudioMixerRunnable sinkAudioMixerRunnable = sinkAudioMixerRunnableFactory.create(sinkId);
+    SinkAudioMixerRunnable sinkAudioMixerRunnable = sinkAudioMixerRunnableFactory.create(
+      sinkId
+    );
     sinkThreadPoolExecutor.execute(sinkAudioMixerRunnable);
   }
 
-  public void stopSink(int sinkId){
+  public void stopSink(int sinkId) {
     AudioMixerRow sinkRow = validateAndGetSink(sinkId);
   }
 
-  public int getTotalActiveSinks(){
+  public int getTotalActiveSinks() {
     return this.sinkThreadPoolExecutor.getActiveCount();
   }
 
-  private AudioMixerRow validateAndGetSink(int sinkId){
+  private AudioMixerRow validateAndGetSink(int sinkId) {
     Optional<AudioMixerRow> sinkRow = audioMixerDAO.get(sinkId);
-    if (sinkRow.isEmpty()){
+    if (sinkRow.isEmpty()) {
       throw new NotFoundException(
-          String.format("No such sink audio mixer exists in the audio mixer table: id %d", sinkId));
+        String.format(
+          "No such sink audio mixer exists in the audio mixer table: id %d",
+          sinkId
+        )
+      );
     }
     return sinkRow.get();
   }

@@ -1,4 +1,4 @@
-package io.sethmachine.universalsoundboard.db.audiomixer;
+package io.sethmachine.universalsoundboard.db.model.audiomixer;
 
 import com.hubspot.immutables.style.HubSpotStyle;
 import org.immutables.value.Value.Immutable;

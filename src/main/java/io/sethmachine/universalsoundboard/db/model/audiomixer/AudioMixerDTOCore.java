@@ -1,4 +1,4 @@
-package io.sethmachine.universalsoundboard.db.audiomixer;
+package io.sethmachine.universalsoundboard.db.model.audiomixer;
 
 import com.hubspot.rosetta.annotations.StoredAsJson;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerType;

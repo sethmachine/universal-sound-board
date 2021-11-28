@@ -1,20 +1,17 @@
 package io.sethmachine.universalsoundboard.service;
 
-import java.util.List;
-import java.util.Optional;
-
-import javax.inject.Inject;
-import javax.ws.rs.NotFoundException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerType;
-import io.sethmachine.universalsoundboard.db.audiomixer.AudioMixerRow;
-import io.sethmachine.universalsoundboard.db.audiomixer.wiring.AudioMixerWiringInsert;
-import io.sethmachine.universalsoundboard.db.audiomixer.wiring.AudioMixerWiringRow;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerWiringDAO;
+import io.sethmachine.universalsoundboard.db.model.audiomixer.AudioMixerRow;
+import io.sethmachine.universalsoundboard.db.model.audiomixer.wiring.AudioMixerWiringInsert;
+import io.sethmachine.universalsoundboard.db.model.audiomixer.wiring.AudioMixerWiringRow;
+import java.util.List;
+import java.util.Optional;
+import javax.inject.Inject;
+import javax.ws.rs.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AudioMixerWiringService {
 

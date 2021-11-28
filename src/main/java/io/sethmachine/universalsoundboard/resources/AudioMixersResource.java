@@ -3,13 +3,11 @@ package io.sethmachine.universalsoundboard.resources;
 import io.sethmachine.universalsoundboard.core.concurrent.SinkAudioMixerRunnable;
 import io.sethmachine.universalsoundboard.core.concurrent.SinkAudioMixerRunnableFactory;
 import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.AudioMixerId;
-import io.sethmachine.universalsoundboard.db.audiomixer.AudioMixerInsert;
-import io.sethmachine.universalsoundboard.db.audiomixer.AudioMixerRow;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;
-import io.sethmachine.universalsoundboard.service.AudioMixerMetadataService;
+import io.sethmachine.universalsoundboard.db.model.audiomixer.AudioMixerInsert;
+import io.sethmachine.universalsoundboard.db.model.audiomixer.AudioMixerRow;
 import java.util.Optional;
 import javax.inject.Inject;
-import javax.sound.sampled.AudioFormat;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -27,8 +25,10 @@ public class AudioMixersResource {
   private final SinkAudioMixerRunnableFactory sinkAudioMixerRunnableFactory;
 
   @Inject
-  public AudioMixersResource(AudioMixerDAO audioMixerDAO,
-                             SinkAudioMixerRunnableFactory sinkAudioMixerRunnableFactory) {
+  public AudioMixersResource(
+    AudioMixerDAO audioMixerDAO,
+    SinkAudioMixerRunnableFactory sinkAudioMixerRunnableFactory
+  ) {
     this.audioMixerDAO = audioMixerDAO;
     this.sinkAudioMixerRunnableFactory = sinkAudioMixerRunnableFactory;
   }
@@ -48,8 +48,10 @@ public class AudioMixersResource {
 
   @GET
   @Path("/foo")
-  public void foo(){
-    SinkAudioMixerRunnable sinkAudioMixerRunnable = sinkAudioMixerRunnableFactory.create(5);
+  public void foo() {
+    SinkAudioMixerRunnable sinkAudioMixerRunnable = sinkAudioMixerRunnableFactory.create(
+      5
+    );
     int bar = 5 + 6;
   }
 }

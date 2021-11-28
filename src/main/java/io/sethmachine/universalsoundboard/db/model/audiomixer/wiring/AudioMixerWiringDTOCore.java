@@ -1,4 +1,4 @@
-package io.sethmachine.universalsoundboard.db.audiomixer.wiring;
+package io.sethmachine.universalsoundboard.db.model.audiomixer.wiring;
 
 public interface AudioMixerWiringDTOCore {
   int getSinkId();
