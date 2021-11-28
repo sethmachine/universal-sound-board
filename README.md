@@ -54,6 +54,20 @@ org.apache.maven.plugins:maven-checkstyle-plugin:3.1.2:check
 * Persistence of audio wiring to a SQL database
     * probably 2 tables: one for each audio mixer used, and another for the wiring rules
 
+### Provide a yaml config that can be used at runtime
+
+How to parse yaml with Java: https://www.baeldung.com/jackson-yaml
+How to provide custom command line arguments to Dropwizard at runtime: https://stackoverflow.com/questions/34119690/how-to-accept-custom-command-line-arguments-with-dropwizard
+
+### Assisted inject stuff
+
+You need this dependency first: https://mvnrepository.com/artifact/com.google.inject.extensions/guice-assistedinject
+
+https://stackoverflow.com/questions/8976250/how-to-use-guices-assistedinject
+https://github.com/google/guice/wiki/AssistedInject
+
+
+
 ## Derby stuff
 
 Derby automatically capitalizes all columns/tables names by default. So when you use Rosetta you should use Rosetta property to make this mapping explicit.
@@ -63,6 +77,88 @@ Supported data types: https://db.apache.org/derby/docs/10.7/ref/crefsqlj31068.ht
 Use blob for raw JSON strings
 
 ## curl HTTP requests
+
+### Audio Mixers Resource
+
+#### Get all audio mixers
+
+curl -X GET -H "Content-Type: application/json" "localhost:8080/audio-mixer-metadata/descriptions?audioMixerType=SINK" | python -m json.tool
+
+{
+  "name": "MacBook Pro Microphone",
+  "vendor": "Apple Inc.",
+  "description": "Direct Audio Device: MacBook Pro Microphone",
+  "version": "Unknown Version"
+}
+
+{
+    "name": "BlackHole 2ch",
+    "vendor": "Existential Audio Inc.",
+    "description": "Direct Audio Device: BlackHole 2ch",
+    "version": "Unknown Version"
+}
+
+
+Get it's audio formats and choose one
+
+--data-urlencode "paramName=value"
+
+curl -G --data-urlencode "audioMixerName=MacBook Pro Microphone" "localhost:8080/audio-mixer-metadata/audio-formats" | python -m json.tool
+
+curl -G --data-urlencode "audioMixerName=BlackHole 2ch" "localhost:8080/audio-mixer-metadata/audio-formats" | python -m json.tool
+
+{
+    "encoding": {
+        "name": "PCM_SIGNED"
+    },
+    "sampleRate": 48000.0,
+    "sampleSizeInBits": 16,
+    "channels": 1,
+    "frameSize": 2,
+    "frameRate": 48000.0,
+    "bigEndian": true,
+    "properties": null
+}
+
+            {
+                "encoding": {
+                    "name": "PCM_SIGNED"
+                },
+                "sampleRate": 44100.0,
+                "sampleSizeInBits": 16,
+                "channels": 2,
+                "frameSize": 4,
+                "frameRate": 44100.0,
+                "bigEndian": true,
+                "properties": null
+            }
+
+
+
+#### Create the audio mixer
+
+Macbook microphones
+
+curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixers --data '{"name": "MacBook Pro Microphone", "vendor": "Apple Inc.", "description": "Direct Audio Device: MacBook Pro Microphone", "version": "Unknown Version", "audioFormat": { "encoding": { "name": "PCM_SIGNED" }, "sampleRate": 48000.0, "sampleSizeInBits": 16, "channels": 1, "frameSize": 2, "frameRate": 48000.0, "bigEndian": true}, "audioMixerType": "SINK"}'
+
+Response: {"audioMixerId":101}
+
+Blackhole 2 channel
+
+curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixers --data '{"name": "BlackHole 2ch", "vendor": "Existential Audio Inc.", "description": "Direct Audio Device: BlackHole 2ch", "version": "Unknown Version", "audioFormat": {"encoding": { "name": "PCM_SIGNED" }, "sampleRate": 44100.0, "sampleSizeInBits": 16, "channels": 2, "frameSize": 4, "frameRate": 44100.0, "bigEndian": true}, "audioMixerType":"SINK"}'
+
+Response: {"audioMixerId":201}
+
+#### Start the sink audio mixer
+
+curl -X POST -H "Content-Type: application/json" localhost:8080/sink/start --data '{"sinkId":101}'
+
+ blackhole 2 channel
+curl -X POST -H "Content-Type: application/json" localhost:8080/sink/start --data '{"sinkId":201}'
+
+curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixer --data '{"bigEndian": true, "encoding": {
+"name": "PCM_SIGNED"}, "sampleRate": 48000.0, "sampleSizeInBits": 16, "channels": 2, "frameSize": 4, "frameRate": 48000.0 }'
+
 
 VB-Cable
 
@@ -84,7 +180,4 @@ curl -X GET -H "Content-Type: application/json" localhost:8080/audio-mixers/1
 Wire audio devices together:
 
 curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixer-wiring --data '{"sinkId":1,
-"sourceId":2}' 
-
-
-
+"sourceId":2}'

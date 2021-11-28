@@ -49,6 +49,14 @@ public class AudioMixerMetadataService {
     return findSingleAudioMixerSupportedFormats(query);
   }
 
+  public Optional<Mixer> findSingleMixerMatchingQuery(AudioMixerMetadataQuery query){
+    return Stream
+        .of(AudioSystem.getMixerInfo())
+        .filter(info -> audioMixerInfoMatchesQuery(info, query))
+        .map(AudioSystem::getMixer)
+        .findFirst();
+  }
+
   private Optional<AudioMixerFormatsResponse> findSingleAudioMixerSupportedFormats(
     AudioMixerMetadataQuery query
   ) {

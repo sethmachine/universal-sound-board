@@ -66,6 +66,12 @@
       <artifactId>dropwizard-guicey</artifactId>
       <version>5.4.0</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.google.inject.extensions/guice-assistedinject -->
+    <dependency>
+      <groupId>com.google.inject.extensions</groupId>
+      <artifactId>guice-assistedinject</artifactId>
+      <version>5.0.1</version>
+    </dependency>
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
