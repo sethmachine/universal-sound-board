@@ -104,6 +104,7 @@ public class AudioMixersService {
   private SinkAudioMixer buildSinkAudioMixer(AudioMixerRow audioMixerRow, Mixer mixer) {
     return SinkAudioMixer
       .builder()
+        .setAudioMixerId(audioMixerRow.getId())
       .setAudioMixerDescription(buildAudioMixerDescription(audioMixerRow, mixer))
       .setAudioFormat(audioMixerRow.getAudioFormat())
       .setMixer(mixer)
@@ -117,6 +118,7 @@ public class AudioMixersService {
   ) {
     return SourceAudioMixer
       .builder()
+        .setAudioMixerId(audioMixerRow.getId())
       .setAudioMixerDescription(buildAudioMixerDescription(audioMixerRow, mixer))
       .setAudioFormat(audioMixerRow.getAudioFormat())
       .setMixer(mixer)

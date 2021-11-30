@@ -82,7 +82,24 @@ Use blob for raw JSON strings
 
 #### Get all audio mixers
 
+This finds all sinks
 curl -X GET -H "Content-Type: application/json" "localhost:8080/audio-mixer-metadata/descriptions?audioMixerType=SINK" | python -m json.tool
+
+This finds sources:
+
+curl -X GET -H "Content-Type: application/json" "localhost:8080/audio-mixer-metadata/descriptions?audioMixerType=SOURCE" | python -m json.tool
+
+        {
+            "name": "BlackHole 2ch",
+            "vendor": "Existential Audio Inc.",
+            "description": "Direct Audio Device: BlackHole 2ch",
+            "version": "Unknown Version",
+            "supportedAudioMixerTypes": [
+                "SINK",
+                "SOURCE"
+            ]
+        },
+
 
 {
   "name": "MacBook Pro Microphone",
@@ -143,6 +160,8 @@ curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixers --d
 
 curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixers --data '{"name": "MacBook Pro Microphone", "vendor": "Apple Inc.", "description": "Direct Audio Device: MacBook Pro Microphone", "version": "Unknown Version", "audioFormat": { "encoding": { "name": "PCM_SIGNED" }, "sampleRate": 48000.0, "sampleSizeInBits": 16, "channels": 1, "frameSize": 2, "frameRate": 48000.0, "bigEndian": true}, "audioMixerType": "SINK"}'
 
+curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixers --data '{"audioMixerDescription":{"name":"BlackHole 2ch","vendor":"Existential Audio Inc.","description":"Direct Audio Device: BlackHole 2ch","version":"Unknown Version","supportedAudioMixerTypes":["SINK","SOURCE"]},"audioFormat":{"encoding":{"name":"PCM_SIGNED"},"sampleRate":44100.0,"sampleSizeInBits":16,"channels":2,"frameSize":4,"frameRate":44100.0,"bigEndian":true},"audioMixerTypeForFormat":"SOURCE","dataLineName":"interface Clip supporting 14 audio formats, and buffers of at least 32 bytes"}'
+
 curl -X GET -H "Content-Type: application/json" localhost:8080/audio-mixers/1
 
 Response: {"audioMixerId":101}
@@ -152,6 +171,10 @@ Blackhole 2 channel
 curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixers --data '{"name": "BlackHole 2ch", "vendor": "Existential Audio Inc.", "description": "Direct Audio Device: BlackHole 2ch", "version": "Unknown Version", "audioFormat": {"encoding": { "name": "PCM_SIGNED" }, "sampleRate": 44100.0, "sampleSizeInBits": 16, "channels": 2, "frameSize": 4, "frameRate": 44100.0, "bigEndian": true}, "audioMixerType":"SINK"}'
 
 Response: {"audioMixerId":201}
+
+#### Wire up a sink and source
+
+
 
 #### Start the sink audio mixer
 

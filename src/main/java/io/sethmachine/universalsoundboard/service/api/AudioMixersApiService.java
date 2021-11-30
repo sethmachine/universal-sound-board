@@ -61,6 +61,7 @@ public class AudioMixersApiService {
   private AudioMixerResponse buildResponseFromMixer(AudioMixerBase mixer){
     return AudioMixerResponse
         .builder()
+        .setAudioMixerId(mixer.getAudioMixerId())
         .setAudioMixerDescription(mixer.getAudioMixerDescription())
         .setAudioFormat(mixer.getAudioFormat())
         .setAudioMixerTypeForFormat(mixer.getAudioMixerType())

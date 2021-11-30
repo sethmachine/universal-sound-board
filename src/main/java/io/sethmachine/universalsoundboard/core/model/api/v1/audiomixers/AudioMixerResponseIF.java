@@ -12,6 +12,7 @@ import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioM
 @Immutable
 @HubSpotStyle
 public interface AudioMixerResponseIF {
+  int getAudioMixerId();
   AudioMixerDescription getAudioMixerDescription();
   AudioFormat getAudioFormat();
   AudioMixerType getAudioMixerTypeForFormat();

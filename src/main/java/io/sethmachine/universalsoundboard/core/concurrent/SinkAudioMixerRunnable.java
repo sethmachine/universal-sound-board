@@ -1,19 +1,19 @@
 package io.sethmachine.universalsoundboard.core.concurrent;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import com.google.common.base.Predicates;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.SinkAudioMixer;
-import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerType;
-import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.query.AudioMixerMetadataQuery;
-import io.sethmachine.universalsoundboard.core.util.audiomixer.AudioMixerMetadataUtil;
-import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;
-import io.sethmachine.universalsoundboard.db.model.audiomixer.AudioMixerRow;
-import io.sethmachine.universalsoundboard.service.api.AudioMixerMetadataApiService;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.SourceAudioMixer;
+
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.Mixer;
+import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
-import javax.ws.rs.NotFoundException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,12 +25,16 @@ public class SinkAudioMixerRunnable implements Runnable {
   private static final int BUFFER_SIZE = 5;
 
   private final SinkAudioMixer sink;
+  private final List<SourceAudioMixer> sources;
 
   private boolean stopped = false;
 
   @Inject
-  public SinkAudioMixerRunnable(@Assisted SinkAudioMixer sink) {
+  public SinkAudioMixerRunnable(@Assisted SinkAudioMixer sink,
+                                @Assisted List<SourceAudioMixer> sources
+  ) {
     this.sink = sink;
+    this.sources = sources;
   }
 
   @Override
@@ -54,6 +58,17 @@ public class SinkAudioMixerRunnable implements Runnable {
     int numBytesRead;
     byte[] data = new byte[targetDataLine.getBufferSize() / 5];
 
+
+//    SourceDataLine toMixerSourceDataLine = AudioSystem.getSourceDataLine(
+//        toMixerAudioFormat,
+//        toMixer.getMixerInfo()
+//    );
+//    toMixerSourceDataLine.open(fromMixerAudioFormat);
+//    toMixerSourceDataLine.start();
+//    toMixerSourceDataLine.write(data, 0, numBytesRead);
+
+    List<SourceDataLine> sourceDataLines = getOpenStartSourceDataLines(sources);
+
     while (!stopped) {
       // Read the next chunk of data from the TargetDataLine.
       numBytesRead = targetDataLine.read(data, 0, data.length);
@@ -62,6 +77,28 @@ public class SinkAudioMixerRunnable implements Runnable {
         numBytesRead,
         sink.getAudioMixerDescription()
       );
+      for (SourceDataLine sourceDataLine: sourceDataLines){
+        sourceDataLine.write(data, 0, numBytesRead);
+        LOG.debug("Wrote {} bytes to source", numBytesRead);
+      }
     }
+  }
+
+  private List<SourceDataLine> getOpenStartSourceDataLines(List<SourceAudioMixer> sources){
+    return sources.stream().map(source -> {
+
+      try {
+        SourceDataLine sourceDataLine = AudioSystem.getSourceDataLine(source.getAudioFormat(), source.getMixer().getMixerInfo());
+        sourceDataLine.open(sink.getAudioFormat());
+        sourceDataLine.start();
+        return sourceDataLine;
+
+      } catch (LineUnavailableException e) {
+        LOG.error("Failed to get source data line for source: {}", source, e);
+        e.printStackTrace();
+      }
+      return null;
+    }).filter(Predicates.notNull())
+        .collect(Collectors.toList());
   }
 }
