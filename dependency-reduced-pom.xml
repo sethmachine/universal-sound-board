@@ -8,6 +8,31 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>com.hubspot.maven.plugins</groupId>
+        <artifactId>prettier-maven-plugin</artifactId>
+        <version>0.16</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>${plugin.prettier.goal}</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <prettierJavaVersion>1.5.0</prettierJavaVersion>
+          <printWidth>90</printWidth>
+          <tabWidth>2</tabWidth>
+          <useTabs>false</useTabs>
+          <ignoreConfigFile>true</ignoreConfigFile>
+          <ignoreEditorConfig>true</ignoreEditorConfig>
+          <inputGlobs>
+            <inputGlob>src/main/java/**/*.java</inputGlob>
+            <inputGlob>src/test/java/**/*.java</inputGlob>
+          </inputGlobs>
+        </configuration>
+      </plugin>
+      <plugin>
         <artifactId>maven-shade-plugin</artifactId>
         <version>3.2.4</version>
         <executions>
@@ -86,6 +111,13 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>11</source>
+          <target>11</target>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <profiles>
@@ -96,6 +128,14 @@
       </properties>
     </profile>
   </profiles>
+  <dependencies>
+    <dependency>
+      <groupId>org.immutables</groupId>
+      <artifactId>value</artifactId>
+      <version>2.8.2</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
   <reporting>
     <plugins>
       <plugin>
@@ -128,5 +168,6 @@
     <mainClass>io.sethmachine.universalsoundboard.UniversalSoundBoardApplication</mainClass>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <plugin.prettier.goal>write</plugin.prettier.goal>
   </properties>
 </project>

@@ -1,6 +1,16 @@
 template: Hello, %s!
 defaultName: Stranger
 
+logging:
+
+  # Permit DEBUG, INFO, WARN and ERROR messages to be logged by appenders.
+  level: DEBUG
+  appenders:
+    # Log warnings and errors to stderr
+    - type: console
+      threshold: DEBUG
+      target: stdout
+
 database:
 
   # the name of your JDBC driver
@@ -22,7 +32,7 @@ database:
   # the maximum amount of time to wait on an empty pool before throwing an exception
   maxWaitForConnection: 1s
 
-    # the SQL query to run when validating a connection's liveness. Get the validation queries from here:
+  # the SQL query to run when validating a connection's liveness. Get the validation queries from here:
   # http://stackoverflow.com/questions/10684244/dbcp-validationquery-for-different-databases
   validationQuery: "/* MyApplication Health Check */ values 1"
 
