@@ -12,6 +12,7 @@ create TABLE audio_mixer (
   "version" VARCHAR(255) NOT NULL, -- The version of the audio mixer
   "audioMixerType" VARCHAR(255) NOT NULL, -- The type of the audio mixer, maps to Java enum, either SINK or SOURCE
   "audioFormat" LONG VARCHAR NOT NULL, -- The serialized JSON string of the audio format used by the sampler
+  "dataLineName" VARCHAR(255) NOT NULL, -- The human readable name of the javax.sound data line used to open the audio mixer device
   PRIMARY KEY ("id")
 );
 

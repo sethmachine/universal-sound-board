@@ -139,7 +139,11 @@ curl -G --data-urlencode "audioMixerName=BlackHole 2ch" "localhost:8080/audio-mi
 
 Macbook microphones
 
+curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixers --data '{"audioMixerDescription":{"name":"MacBook Pro Microphone","vendor":"Apple Inc.","description":"Direct Audio Device: MacBook Pro Microphone","version":"Unknown Version","supportedAudioMixerTypes":["SINK"]},"audioFormat":{"encoding":{"name":"PCM_SIGNED"},"sampleRate":48000.0,"sampleSizeInBits":16,"channels":1,"frameSize":2,"frameRate":48000.0,"bigEndian":true},"audioMixerTypeForFormat":"SINK","dataLineName":"interface TargetDataLine supporting 8 audio formats, and buffers of at least 32 bytes"}'
+
 curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixers --data '{"name": "MacBook Pro Microphone", "vendor": "Apple Inc.", "description": "Direct Audio Device: MacBook Pro Microphone", "version": "Unknown Version", "audioFormat": { "encoding": { "name": "PCM_SIGNED" }, "sampleRate": 48000.0, "sampleSizeInBits": 16, "channels": 1, "frameSize": 2, "frameRate": 48000.0, "bigEndian": true}, "audioMixerType": "SINK"}'
+
+curl -X GET -H "Content-Type: application/json" localhost:8080/audio-mixers/1
 
 Response: {"audioMixerId":101}
 
@@ -181,3 +185,7 @@ Wire audio devices together:
 
 curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixer-wiring --data '{"sinkId":1,
 "sourceId":2}'
+
+Start a sink
+
+curl -X POST -H "Content-Type: application/json" localhost:8080/sink/start --data '{"sinkId": 1}'

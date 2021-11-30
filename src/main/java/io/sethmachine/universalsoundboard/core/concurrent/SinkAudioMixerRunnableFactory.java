@@ -1,5 +1,7 @@
 package io.sethmachine.universalsoundboard.core.concurrent;
 
+import io.sethmachine.universalsoundboard.core.model.audiomixers.SinkAudioMixer;
+
 public interface SinkAudioMixerRunnableFactory {
-  SinkAudioMixerRunnable create(int sinkId);
+  SinkAudioMixerRunnable create(SinkAudioMixer sinkAudioMixer);
 }

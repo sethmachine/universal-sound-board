@@ -1,6 +1,5 @@
 package io.sethmachine.universalsoundboard.resources;
 
-import io.sethmachine.universalsoundboard.core.concurrent.SinkAudioMixerRunnable;
 import io.sethmachine.universalsoundboard.core.concurrent.SinkAudioMixerRunnableFactory;
 import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.AudioMixerId;
 import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.concurrent.SinkCommandRequest;
@@ -16,29 +15,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("/sink")
+@Path("/sinks")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class SinkAudioMixerRunnableResource {
+public class SinksResource {
 
-  private final AudioMixerDAO audioMixerDAO;
-  private final SinkAudioMixerRunnableFactory sinkAudioMixerRunnableFactory;
   private final SinkAudioMixerRunnableService sinkAudioMixerRunnableService;
 
   @Inject
-  public SinkAudioMixerRunnableResource(
-    AudioMixerDAO audioMixerDAO,
-    SinkAudioMixerRunnableFactory sinkAudioMixerRunnableFactory,
-    SinkAudioMixerRunnableService sinkAudioMixerRunnableService
-  ) {
-    this.audioMixerDAO = audioMixerDAO;
-    this.sinkAudioMixerRunnableFactory = sinkAudioMixerRunnableFactory;
+  public SinksResource(SinkAudioMixerRunnableService sinkAudioMixerRunnableService) {
     this.sinkAudioMixerRunnableService = sinkAudioMixerRunnableService;
-  }
-
-  @POST
-  public AudioMixerId createAudioMixer(AudioMixerInsert audioMixerInsert) {
-    return AudioMixerId.builder().setId(audioMixerDAO.insert(audioMixerInsert)).build();
   }
 
   @POST
@@ -60,14 +46,5 @@ public class SinkAudioMixerRunnableResource {
       .builder()
       .setCount(sinkAudioMixerRunnableService.getTotalActiveSinks())
       .build();
-  }
-
-  @GET
-  @Path("/foo")
-  public void foo() {
-    SinkAudioMixerRunnable sinkAudioMixerRunnable = sinkAudioMixerRunnableFactory.create(
-      5
-    );
-    int bar = 5 + 6;
   }
 }

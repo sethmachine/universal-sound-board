@@ -1,8 +1,11 @@
 package io.sethmachine.universalsoundboard.resources;
 
+import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.wiring.AudioMixerWiringList;
 import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.wiring.WireSinkToSourceRequest;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.wiring.AudioMixerWiringPair;
 import io.sethmachine.universalsoundboard.db.model.audiomixer.wiring.AudioMixerWiringRow;
 import io.sethmachine.universalsoundboard.service.AudioMixerWiringService;
+import io.sethmachine.universalsoundboard.service.api.AudioMixerWiringApiService;
 import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -18,29 +21,40 @@ import javax.ws.rs.core.MediaType;
 @Consumes(MediaType.APPLICATION_JSON)
 public class AudioMixerWiringResource {
 
-  private final AudioMixerWiringService audioMixerWiringService;
+  private final AudioMixerWiringApiService audioMixerWiringApiService;
 
   @Inject
-  public AudioMixerWiringResource(AudioMixerWiringService audioMixerWiringService) {
-    this.audioMixerWiringService = audioMixerWiringService;
+  public AudioMixerWiringResource(AudioMixerWiringApiService audioMixerWiringApiService) {
+    this.audioMixerWiringApiService = audioMixerWiringApiService;
   }
 
   @POST
-  public Optional<AudioMixerWiringRow> wireSinkToSource(
-    WireSinkToSourceRequest wireSinkToSourceRequest
-  ) {
-    return audioMixerWiringService.wireSinkToSource(
-      wireSinkToSourceRequest.getSinkId(),
-      wireSinkToSourceRequest.getSourceId()
-    );
+  public void wireSinkToSource(WireSinkToSourceRequest wireSinkToSourceRequest) {
+    audioMixerWiringApiService.wireSinkToSource(wireSinkToSourceRequest);
   }
 
   @GET
   @Path("/{sinkId}/{sourceId}")
-  public Optional<AudioMixerWiringRow> getWiring(
+  public Optional<AudioMixerWiringPair> getWiring(
     @PathParam("sinkId") int sinkId,
     @PathParam("sourceId") int sourceId
   ) {
-    return audioMixerWiringService.getWiring(sinkId, sourceId);
+    return audioMixerWiringApiService.getWiring(sinkId, sourceId);
+  }
+
+  @GET
+  @Path("/sink/{sinkId}")
+  public AudioMixerWiringList getSinkWirings(
+      @PathParam("sinkId") int sinkId
+  ) {
+    return audioMixerWiringApiService.getSinkWirings(sinkId);
+  }
+
+  @GET
+  @Path("/source/{sourceId}")
+  public AudioMixerWiringList getSourceWirings(
+      @PathParam("sourceId") int sourceId
+  ) {
+    return audioMixerWiringApiService.getSourceWirings(sourceId);
   }
 }

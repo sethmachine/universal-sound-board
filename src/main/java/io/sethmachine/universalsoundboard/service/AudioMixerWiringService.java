@@ -1,6 +1,8 @@
 package io.sethmachine.universalsoundboard.service;
 
+import com.google.common.collect.ImmutableList;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerType;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.wiring.AudioMixerWiringPair;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerWiringDAO;
 import io.sethmachine.universalsoundboard.db.model.audiomixer.AudioMixerRow;
@@ -8,6 +10,7 @@ import io.sethmachine.universalsoundboard.db.model.audiomixer.wiring.AudioMixerW
 import io.sethmachine.universalsoundboard.db.model.audiomixer.wiring.AudioMixerWiringRow;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import org.slf4j.Logger;
@@ -31,8 +34,7 @@ public class AudioMixerWiringService {
     this.audioMixerWiringDAO = audioMixerWiringDAO;
   }
 
-  public Optional<AudioMixerWiringRow> wireSinkToSource(int sinkId, int sourceId)
-    throws NotFoundException {
+  public void wireSinkToSource(int sinkId, int sourceId) throws NotFoundException {
     Optional<AudioMixerRow> maybeSink = audioMixerDAO.get(sinkId);
     Optional<AudioMixerRow> maybeSource = audioMixerDAO.get(sourceId);
     if (maybeSink.isEmpty()) {
@@ -60,9 +62,7 @@ public class AudioMixerWiringService {
       .setSourceId(sourceId)
       .setSourceName(maybeSource.get().getName())
       .build();
-
     audioMixerWiringDAO.insert(insert);
-    return audioMixerWiringDAO.get(sinkId, sourceId);
   }
 
   private void validateSinkAndSourceWiring(AudioMixerRow sink, AudioMixerRow source) {
@@ -79,15 +79,35 @@ public class AudioMixerWiringService {
     }
   }
 
-  public Optional<AudioMixerWiringRow> getWiring(int sinkId, int sourceId) {
-    return audioMixerWiringDAO.get(sinkId, sourceId);
+  public Optional<AudioMixerWiringPair> getWiring(int sinkId, int sourceId) {
+    return audioMixerWiringDAO
+      .get(sinkId, sourceId)
+      .map(this::buildPairFromAudioWiringRow);
   }
 
-  public List<AudioMixerWiringRow> getSinkWirings(int sinkId) {
-    return audioMixerWiringDAO.getSinkWirings(sinkId);
+  public List<AudioMixerWiringPair> getSinkWirings(int sinkId) {
+    return audioMixerWiringDAO
+      .getSinkWirings(sinkId)
+      .stream()
+      .map(this::buildPairFromAudioWiringRow)
+      .collect(Collectors.toList());
   }
 
-  public List<AudioMixerWiringRow> getSourceWirings(int sourceId) {
-    return audioMixerWiringDAO.getSourceWirings(sourceId);
+  public List<AudioMixerWiringPair> getSourceWirings(int sourceId) {
+    return audioMixerWiringDAO
+      .getSourceWirings(sourceId)
+      .stream()
+      .map(this::buildPairFromAudioWiringRow)
+      .collect(Collectors.toList());
+  }
+
+  private AudioMixerWiringPair buildPairFromAudioWiringRow(AudioMixerWiringRow row) {
+    return AudioMixerWiringPair
+      .builder()
+      .setSinkId(row.getSinkId())
+      .setSinkName(row.getSinkName())
+      .setSourceId(row.getSourceId())
+      .setSourceName(row.getSourceName())
+      .build();
   }
 }

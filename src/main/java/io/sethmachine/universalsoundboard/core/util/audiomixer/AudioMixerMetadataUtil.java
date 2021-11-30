@@ -1,5 +1,11 @@
 package io.sethmachine.universalsoundboard.core.util.audiomixer;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerDescription;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerDescriptionAndFormat;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerType;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.query.AudioMixerMetadataQuery;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,24 +13,14 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.Line;
 import javax.sound.sampled.Mixer;
 import javax.sound.sampled.Mixer.Info;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-
-import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerDescription;
-import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerDescriptionAndFormat;
-import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerType;
-import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.query.AudioMixerMetadataQuery;
 
 public class AudioMixerMetadataUtil {
 
@@ -149,7 +145,7 @@ public class AudioMixerMetadataUtil {
     return true;
   }
 
-  private ImmutableSet<AudioMixerType> findSupportedAudioMixerTypes(Info audioMixerInfo) {
+  public ImmutableSet<AudioMixerType> findSupportedAudioMixerTypes(Info audioMixerInfo) {
     Mixer audioMixer = AudioSystem.getMixer(audioMixerInfo);
     ImmutableSet.Builder<AudioMixerType> builder = ImmutableSet.builder();
     if (Stream.of(audioMixer.getTargetLineInfo()).findAny().isPresent()) {

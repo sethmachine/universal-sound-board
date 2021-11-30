@@ -2,6 +2,7 @@ package io.sethmachine.universalsoundboard.core.concurrent;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.SinkAudioMixer;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerType;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.query.AudioMixerMetadataQuery;
 import io.sethmachine.universalsoundboard.core.util.audiomixer.AudioMixerMetadataUtil;
@@ -23,55 +24,32 @@ public class SinkAudioMixerRunnable implements Runnable {
   // see: https://docs.oracle.com/javase/8/docs/technotes/guides/sound/programmer_guide/chapter5.html
   private static final int BUFFER_SIZE = 5;
 
-  private final int sinkId;
-  private final AudioMixerDAO audioMixerDao;
-  private final AudioMixerMetadataUtil audioMixerMetadataUtil;
+  private final SinkAudioMixer sink;
 
   private boolean stopped = false;
 
   @Inject
-  public SinkAudioMixerRunnable(
-    AudioMixerDAO audioMixerDao,
-    AudioMixerMetadataUtil audioMixerMetadataUtil,
-    @Assisted int sinkId
-  ) {
-    this.audioMixerDao = audioMixerDao;
-    this.audioMixerMetadataUtil = audioMixerMetadataUtil;
-    this.sinkId = sinkId;
+  public SinkAudioMixerRunnable(@Assisted SinkAudioMixer sink) {
+    this.sink = sink;
   }
 
   @Override
   public void run() {
-    AudioMixerRow sinkRow = audioMixerDao.get(sinkId).orElseThrow();
-    AudioMixerMetadataQuery query = AudioMixerMetadataQuery
-      .builder()
-      .setAudioMixerName(sinkRow.getName())
-      .setAudioMixerType(AudioMixerType.SINK)
-      .build();
-    Mixer sinkMixer = audioMixerMetadataUtil
-      .findFirstMixerMatchingQuery(query)
-      .orElseThrow(() ->
-        new NotFoundException(
-          String.format("No such audio mixer found in the AudioSystem: query %s", query)
-        )
-      );
-
     try {
-      runSink(sinkRow, sinkMixer);
+      runSink(sink);
     } catch (LineUnavailableException e) {
-      LOG.error("Target data line not available for this sink: sink ID {}", sinkId, e);
+      LOG.error("Target data line not available for this sink: {}", sink, e);
       e.printStackTrace();
     }
   }
 
-  private void runSink(AudioMixerRow sinkRow, Mixer sinkMixer)
-    throws LineUnavailableException {
+  private void runSink(SinkAudioMixer sink) throws LineUnavailableException {
     TargetDataLine targetDataLine = AudioSystem.getTargetDataLine(
-      sinkRow.getAudioFormat(),
-      sinkMixer.getMixerInfo()
+      sink.getAudioFormat(),
+      sink.getMixer().getMixerInfo()
     );
 
-    targetDataLine.open(sinkRow.getAudioFormat());
+    targetDataLine.open(sink.getAudioFormat());
     targetDataLine.start();
     int numBytesRead;
     byte[] data = new byte[targetDataLine.getBufferSize() / 5];
@@ -79,7 +57,11 @@ public class SinkAudioMixerRunnable implements Runnable {
     while (!stopped) {
       // Read the next chunk of data from the TargetDataLine.
       numBytesRead = targetDataLine.read(data, 0, data.length);
-      LOG.debug("Read {} bytes: sink ID {}", numBytesRead, sinkRow.getId());
+      LOG.debug(
+        "Read {} bytes: sink ID {}",
+        numBytesRead,
+        sink.getAudioMixerDescription()
+      );
     }
   }
 }

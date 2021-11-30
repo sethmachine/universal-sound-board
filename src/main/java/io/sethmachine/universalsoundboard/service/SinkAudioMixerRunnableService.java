@@ -3,9 +3,8 @@ package io.sethmachine.universalsoundboard.service;
 import com.google.inject.name.Named;
 import io.sethmachine.universalsoundboard.core.concurrent.SinkAudioMixerRunnable;
 import io.sethmachine.universalsoundboard.core.concurrent.SinkAudioMixerRunnableFactory;
-import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.SinkAudioMixer;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerWiringDAO;
-import io.sethmachine.universalsoundboard.db.model.audiomixer.AudioMixerRow;
 import java.util.Optional;
 import java.util.concurrent.ThreadPoolExecutor;
 import javax.inject.Inject;
@@ -19,43 +18,43 @@ public class SinkAudioMixerRunnableService {
     SinkAudioMixerRunnableService.class
   );
 
-  private final AudioMixerDAO audioMixerDAO;
+  private final AudioMixersService audioMixersService;
   private final AudioMixerWiringDAO audioMixerWiringDAO;
   private final SinkAudioMixerRunnableFactory sinkAudioMixerRunnableFactory;
   private final ThreadPoolExecutor sinkThreadPoolExecutor;
 
   @Inject
   public SinkAudioMixerRunnableService(
-    AudioMixerDAO audioMixerDAO,
+    AudioMixersService audioMixersService,
     AudioMixerWiringDAO audioMixerWiringDAO,
     SinkAudioMixerRunnableFactory sinkAudioMixerRunnableFactory,
     @Named("SinkThreadPoolExecutor") ThreadPoolExecutor sinkThreadPoolExecutor
   ) {
-    this.audioMixerDAO = audioMixerDAO;
+    this.audioMixersService = audioMixersService;
     this.audioMixerWiringDAO = audioMixerWiringDAO;
     this.sinkAudioMixerRunnableFactory = sinkAudioMixerRunnableFactory;
     this.sinkThreadPoolExecutor = sinkThreadPoolExecutor;
   }
 
   public void startSink(int sinkId) {
-    AudioMixerRow sinkRow = validateAndGetSink(sinkId);
+    SinkAudioMixer sink = validateAndGetSink(sinkId);
     SinkAudioMixerRunnable sinkAudioMixerRunnable = sinkAudioMixerRunnableFactory.create(
-      sinkId
+      sink
     );
     sinkThreadPoolExecutor.execute(sinkAudioMixerRunnable);
   }
 
   public void stopSink(int sinkId) {
-    AudioMixerRow sinkRow = validateAndGetSink(sinkId);
+    SinkAudioMixer sink = validateAndGetSink(sinkId);
   }
 
   public int getTotalActiveSinks() {
     return this.sinkThreadPoolExecutor.getActiveCount();
   }
 
-  private AudioMixerRow validateAndGetSink(int sinkId) {
-    Optional<AudioMixerRow> sinkRow = audioMixerDAO.get(sinkId);
-    if (sinkRow.isEmpty()) {
+  private SinkAudioMixer validateAndGetSink(int sinkId) {
+    Optional<SinkAudioMixer> sink = audioMixersService.getSinkAudioMixer(sinkId);
+    if (sink.isEmpty()) {
       throw new NotFoundException(
         String.format(
           "No such sink audio mixer exists in the audio mixer table: id %d",
@@ -63,6 +62,6 @@ public class SinkAudioMixerRunnableService {
         )
       );
     }
-    return sinkRow.get();
+    return sink.get();
   }
 }

@@ -1,5 +1,6 @@
 package io.sethmachine.universalsoundboard.core.model.audiomixers;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerDescription;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerType;
 import javax.sound.sampled.AudioFormat;
@@ -14,5 +15,8 @@ public interface AudioMixerBase {
 
   AudioFormat getAudioFormat();
 
+  @JsonIgnore
   Mixer getMixer();
+
+  String getDataLineName();
 }
