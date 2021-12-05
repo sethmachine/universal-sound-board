@@ -211,4 +211,4 @@ curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixer-wiri
 
 Start a sink
 
-curl -X POST -H "Content-Type: application/json" localhost:8080/sink/start --data '{"sinkId": 1}'
+curl -X POST -H "Content-Type: application/json" localhost:8080/sinks/start --data '{"sinkId": 1}'

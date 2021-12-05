@@ -18,7 +18,6 @@ import io.sethmachine.universalsoundboard.db.model.audiomixer.AudioMixerRow;
 import io.sethmachine.universalsoundboard.service.AudioMixersService;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.sound.sampled.Mixer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,27 +44,31 @@ public class AudioMixersApiService {
       .map(this::buildResponseFromMixer);
   }
 
-  public AudioMixersList getAllAudioMixers(){
-    return  AudioMixersList.builder().setAudioMixers(
-        audioMixersService.getAllAudioMixers()
-            .stream()
-            .map(this::buildResponseFromMixer).collect(Collectors.toList())
-    ).build();
+  public AudioMixersList getAllAudioMixers() {
+    return AudioMixersList
+      .builder()
+      .setAudioMixers(
+        audioMixersService
+          .getAllAudioMixers()
+          .stream()
+          .map(this::buildResponseFromMixer)
+          .collect(Collectors.toList())
+      )
+      .build();
   }
-
 
   public AudioMixerId createAudioMixer(CreateAudioMixerRequest createAudioMixerRequest) {
     return audioMixersService.createAudioMixer(createAudioMixerRequest);
   }
 
-  private AudioMixerResponse buildResponseFromMixer(AudioMixerBase mixer){
+  private AudioMixerResponse buildResponseFromMixer(AudioMixerBase mixer) {
     return AudioMixerResponse
-        .builder()
-        .setAudioMixerId(mixer.getAudioMixerId())
-        .setAudioMixerDescription(mixer.getAudioMixerDescription())
-        .setAudioFormat(mixer.getAudioFormat())
-        .setAudioMixerTypeForFormat(mixer.getAudioMixerType())
-        .setDataLineName(mixer.getDataLineName())
-        .build();
+      .builder()
+      .setAudioMixerId(mixer.getAudioMixerId())
+      .setAudioMixerDescription(mixer.getAudioMixerDescription())
+      .setAudioFormat(mixer.getAudioFormat())
+      .setAudioMixerTypeForFormat(mixer.getAudioMixerType())
+      .setDataLineName(mixer.getDataLineName())
+      .build();
   }
 }

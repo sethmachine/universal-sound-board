@@ -23,8 +23,10 @@ public class AudioMixerWiringApiService {
   }
 
   public void wireSinkToSource(WireSinkToSourceRequest wireSinkToSourceRequest) {
-    audioMixerWiringService.wireSinkToSource(wireSinkToSourceRequest.getSinkId(),
-        wireSinkToSourceRequest.getSourceId());
+    audioMixerWiringService.wireSinkToSource(
+      wireSinkToSourceRequest.getSinkId(),
+      wireSinkToSourceRequest.getSourceId()
+    );
   }
 
   public Optional<AudioMixerWiringPair> getWiring(int sinkId, int sourceId) {
@@ -32,14 +34,16 @@ public class AudioMixerWiringApiService {
   }
 
   public AudioMixerWiringList getSinkWirings(int sinkId) {
-    return AudioMixerWiringList.builder()
-        .setWirings(audioMixerWiringService.getSinkWirings(sinkId))
-        .build();
+    return AudioMixerWiringList
+      .builder()
+      .setWirings(audioMixerWiringService.getSinkWirings(sinkId))
+      .build();
   }
 
   public AudioMixerWiringList getSourceWirings(int sourceId) {
-    return AudioMixerWiringList.builder()
-        .setWirings(audioMixerWiringService.getSourceWirings(sourceId))
-        .build();
+    return AudioMixerWiringList
+      .builder()
+      .setWirings(audioMixerWiringService.getSourceWirings(sourceId))
+      .build();
   }
 }

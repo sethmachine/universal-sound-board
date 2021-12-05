@@ -1,6 +1,8 @@
 package io.sethmachine.universalsoundboard.guice;
 
+import com.google.common.eventbus.EventBus;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
@@ -44,21 +46,25 @@ public class UniversalSoundBoardModule extends DropwizardAwareModule<Configurati
   }
 
   @Provides
+  @Singleton
   public FoobarDAO provideFoobarDAO(@Named("JDBI") Jdbi jdbi) {
     return jdbi.onDemand(FoobarDAO.class);
   }
 
   @Provides
+  @Singleton
   public AudioMixerDAO provideAudioMixerDAO(@Named("JDBI") Jdbi jdbi) {
     return jdbi.onDemand(AudioMixerDAO.class);
   }
 
   @Provides
+  @Singleton
   public AudioMixerWiringDAO provideAudioMixerWiringDAO(@Named("JDBI") Jdbi jdbi) {
     return jdbi.onDemand(AudioMixerWiringDAO.class);
   }
 
   @Provides
+  @Singleton
   @Named("SinkThreadPoolExecutor")
   public ThreadPoolExecutor provideThreadPoolExecutor() {
     ThreadPoolExecutor tpe = new ThreadPoolExecutor(
@@ -70,5 +76,12 @@ public class UniversalSoundBoardModule extends DropwizardAwareModule<Configurati
     );
     //    tpe.execute(new SinkAudioMixerRunnable(5));
     return tpe;
+  }
+
+  @Provides
+  @Singleton
+  @Named("SinkEventBus")
+  public EventBus provideEventBusForSinks() {
+    return new EventBus();
   }
 }
