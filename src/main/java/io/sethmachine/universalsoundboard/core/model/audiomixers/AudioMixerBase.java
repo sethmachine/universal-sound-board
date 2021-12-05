@@ -8,6 +8,8 @@ import javax.sound.sampled.Mixer;
 import org.immutables.value.Value;
 
 public interface AudioMixerBase {
+  int getAudioMixerId();
+
   @Value.Derived
   AudioMixerType getAudioMixerType();
 

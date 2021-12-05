@@ -4,11 +4,11 @@ defaultName: Stranger
 logging:
 
   # Permit DEBUG, INFO, WARN and ERROR messages to be logged by appenders.
-  level: DEBUG
+  level: INFO
   appenders:
     # Log warnings and errors to stderr
     - type: console
-      threshold: DEBUG
+      threshold: INFO
       target: stdout
 
 database:

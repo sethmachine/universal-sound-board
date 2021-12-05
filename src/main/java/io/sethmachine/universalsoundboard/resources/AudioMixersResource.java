@@ -1,7 +1,11 @@
 package io.sethmachine.universalsoundboard.resources;
 
+import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.AudioMixerId;
+import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.AudioMixerResponse;
+import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.AudioMixersList;
+import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.CreateAudioMixerRequest;
+import io.sethmachine.universalsoundboard.service.api.AudioMixersApiService;
 import java.util.Optional;
-
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -10,12 +14,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.AudioMixerId;
-import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.AudioMixerResponse;
-import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.AudioMixersList;
-import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.CreateAudioMixerRequest;
-import io.sethmachine.universalsoundboard.service.api.AudioMixersApiService;
 
 @Path("/audio-mixers")
 @Produces(MediaType.APPLICATION_JSON)
@@ -43,10 +41,7 @@ public class AudioMixersResource {
   }
 
   @GET
-  public AudioMixersList getAllAudioMixers(
-  ) {
+  public AudioMixersList getAllAudioMixers() {
     return audioMixersApiService.getAllAudioMixers();
   }
-
-
 }

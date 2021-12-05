@@ -1,7 +1,9 @@
 package io.sethmachine.universalsoundboard.core.concurrent;
 
 import io.sethmachine.universalsoundboard.core.model.audiomixers.SinkAudioMixer;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.SourceAudioMixer;
+import java.util.List;
 
 public interface SinkAudioMixerRunnableFactory {
-  SinkAudioMixerRunnable create(SinkAudioMixer sinkAudioMixer);
+  SinkAudioMixerRunnable create(SinkAudioMixer sink, List<SourceAudioMixer> sources);
 }

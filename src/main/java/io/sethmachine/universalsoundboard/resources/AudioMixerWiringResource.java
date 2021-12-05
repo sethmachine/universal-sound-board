@@ -44,17 +44,13 @@ public class AudioMixerWiringResource {
 
   @GET
   @Path("/sink/{sinkId}")
-  public AudioMixerWiringList getSinkWirings(
-      @PathParam("sinkId") int sinkId
-  ) {
+  public AudioMixerWiringList getSinkWirings(@PathParam("sinkId") int sinkId) {
     return audioMixerWiringApiService.getSinkWirings(sinkId);
   }
 
   @GET
   @Path("/source/{sourceId}")
-  public AudioMixerWiringList getSourceWirings(
-      @PathParam("sourceId") int sourceId
-  ) {
+  public AudioMixerWiringList getSourceWirings(@PathParam("sourceId") int sourceId) {
     return audioMixerWiringApiService.getSourceWirings(sourceId);
   }
 }
