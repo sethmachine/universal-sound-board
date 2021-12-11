@@ -1,11 +1,7 @@
 package io.sethmachine.universalsoundboard.resources;
 
-import io.sethmachine.universalsoundboard.core.concurrent.SinkAudioMixerRunnableFactory;
-import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.AudioMixerId;
 import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.concurrent.SinkCommandRequest;
 import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.concurrent.TotalActivesSinksResponse;
-import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;
-import io.sethmachine.universalsoundboard.db.model.audiomixer.AudioMixerInsert;
 import io.sethmachine.universalsoundboard.service.SinkAudioMixerRunnableService;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;

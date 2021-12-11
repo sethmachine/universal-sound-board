@@ -101,6 +101,14 @@ public class AudioMixerWiringService {
       .collect(Collectors.toList());
   }
 
+  public List<AudioMixerWiringPair> getAllWirings() {
+    return audioMixerWiringDAO
+      .getAllWirings()
+      .stream()
+      .map(this::buildPairFromAudioWiringRow)
+      .collect(Collectors.toList());
+  }
+
   private AudioMixerWiringPair buildPairFromAudioWiringRow(AudioMixerWiringRow row) {
     return AudioMixerWiringPair
       .builder()

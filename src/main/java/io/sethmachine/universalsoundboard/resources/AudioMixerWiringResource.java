@@ -28,6 +28,11 @@ public class AudioMixerWiringResource {
     this.audioMixerWiringApiService = audioMixerWiringApiService;
   }
 
+  @GET
+  public AudioMixerWiringList listWirings() {
+    return audioMixerWiringApiService.getAllWirings();
+  }
+
   @POST
   public void wireSinkToSource(WireSinkToSourceRequest wireSinkToSourceRequest) {
     audioMixerWiringApiService.wireSinkToSource(wireSinkToSourceRequest);
