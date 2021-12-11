@@ -46,4 +46,11 @@ public class AudioMixerWiringApiService {
       .setWirings(audioMixerWiringService.getSourceWirings(sourceId))
       .build();
   }
+
+  public AudioMixerWiringList getAllWirings() {
+    return AudioMixerWiringList
+      .builder()
+      .setWirings(audioMixerWiringService.getAllWirings())
+      .build();
+  }
 }

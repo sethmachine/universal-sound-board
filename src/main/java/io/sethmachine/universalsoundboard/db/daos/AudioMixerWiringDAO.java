@@ -39,4 +39,7 @@ public interface AudioMixerWiringDAO {
 
   @SqlQuery("SELECT * FROM audio_mixer_wiring WHERE \"sourceId\" = :sourceId")
   List<AudioMixerWiringRow> getSourceWirings(@Bind("sourceId") int sourceId);
+
+  @SqlQuery("SELECT * FROM audio_mixer_wiring")
+  List<AudioMixerWiringRow> getAllWirings();
 }
