@@ -115,6 +115,16 @@ curl -X GET -H "Content-Type: application/json" "localhost:8080/audio-mixer-meta
     "version": "Unknown Version"
 }
 
+        {
+            "name": "MacBook Pro Speakers",
+            "vendor": "Apple Inc.",
+            "description": "Direct Audio Device: MacBook Pro Speakers",
+            "version": "Unknown Version",
+            "supportedAudioMixerTypes": [
+                "SOURCE"
+            ]
+        },
+
 
 Get it's audio formats and choose one
 
@@ -122,10 +132,14 @@ Get it's audio formats and choose one
 
 curl -G --data-urlencode "audioMixerName=MacBook Pro Microphone" "localhost:8080/audio-mixer-metadata/audio-formats" | python -m json.tool
 
-curl -G --data-urlencode "audioMixerName=BlackHole 2ch" "localhost:8080/audio-mixer-metadata/audio-formats" | python -m json.tool
+curl -G --data-urlencode "audioMixerName=BlackHole 2ch" --data-urlencode "audioMixerType=SOURCE" "localhost:8080/audio-mixer-metadata/audio-formats" | python -m json.tool
+
+{"audioMixerDescription":{"name":"BlackHole 2ch","vendor":"Existential Audio Inc.","description":"Direct Audio Device: BlackHole 2ch","version":"Unknown Version","supportedAudioMixerTypes":["SINK","SOURCE"]},"audioFormat":{"encoding":{"name":"PCM_SIGNED"},"sampleRate":44100.0,"sampleSizeInBits":16,"channels":2,"frameSize":4,"frameRate":44100.0,"bigEndian":false},"audioMixerTypeForFormat":"SOURCE","dataLineName":"interface SourceDataLine supporting 14 audio formats, and buffers of at least 32 bytes"}
+
+
 
 {
-    "encoding": {
+    "encoding": {curl -G --data-urlencode "audioMixerName=MacBook Pro Speakers" "localhost:8080/audio-mixer-metadata/audio-formats" | python -m json.tool
         "name": "PCM_SIGNED"
     },
     "sampleRate": 48000.0,
@@ -151,10 +165,18 @@ curl -G --data-urlencode "audioMixerName=BlackHole 2ch" "localhost:8080/audio-mi
             }
 
 
+{"audioMixerDescription":{"name":"MacBook Pro Speakers","vendor":"Apple Inc.","description":"Direct Audio Device: MacBook Pro Speakers","version":"Unknown Version","supportedAudioMixerTypes":["SOURCE"]},"audioFormat":{"encoding":{"name":"PCM_SIGNED"},"sampleRate":48000.0,"sampleSizeInBits":16,"channels":2,"frameSize":4,"frameRate":48000.0,"bigEndian":false},"audioMixerTypeForFormat":"SOURCE","dataLineName":"interface SourceDataLine supporting 14 audio formats, and buffers of at least 32 bytes"}
 
 #### Create the audio mixer
 
+MAcbook speakers
+
+curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixers --data '{"audioMixerDescription":{"name":"BlackHole 2ch","vendor":"Existential Audio Inc.","description":"Direct Audio Device: BlackHole 2ch","version":"Unknown Version","supportedAudioMixerTypes":["SINK","SOURCE"]},"audioFormat":{"encoding":{"name":"PCM_SIGNED"},"sampleRate":44100.0,"sampleSizeInBits":16,"channels":2,"frameSize":4,"frameRate":44100.0,"bigEndian":false},"audioMixerTypeForFormat":"SOURCE","dataLineName":"interface SourceDataLine supporting 14 audio formats, and buffers of at least 32 bytes"}'
+
+curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixers --data '{"audioMixerDescription":{"name":"MacBook Pro Speakers","vendor":"Apple Inc.","description":"Direct Audio Device: MacBook Pro Speakers","version":"Unknown Version","supportedAudioMixerTypes":["SOURCE"]},"audioFormat":{"encoding":{"name":"PCM_SIGNED"},"sampleRate":48000.0,"sampleSizeInBits":16,"channels":2,"frameSize":4,"frameRate":48000.0,"bigEndian":false},"audioMixerTypeForFormat":"SOURCE","dataLineName":"interface SourceDataLine supporting 14 audio formats, and buffers of at least 32 bytes"}'
+
 Macbook microphones
+
 
 curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixers --data '{"audioMixerDescription":{"name":"MacBook Pro Microphone","vendor":"Apple Inc.","description":"Direct Audio Device: MacBook Pro Microphone","version":"Unknown Version","supportedAudioMixerTypes":["SINK"]},"audioFormat":{"encoding":{"name":"PCM_SIGNED"},"sampleRate":48000.0,"sampleSizeInBits":16,"channels":1,"frameSize":2,"frameRate":48000.0,"bigEndian":true},"audioMixerTypeForFormat":"SINK","dataLineName":"interface TargetDataLine supporting 8 audio formats, and buffers of at least 32 bytes"}'
 
@@ -212,3 +234,20 @@ curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixer-wiri
 Start a sink
 
 curl -X POST -H "Content-Type: application/json" localhost:8080/sinks/start --data '{"sinkId": 1}'
+
+
+### upload files and play audio clips
+
+// sourceId 301 is my macbook speakers
+
+curl -H "Content-Type:multipart/form-data" -F 'audioFile=@/Users/sdworman/laugh.wav' -F "sourceCommandRequest={\"sourceId\":301};type=application/json" localhost:8080/sources/play
+
+curl -H "Content-Type:multipart/form-data" -F 'audioFile=@/Users/sdworman/laugh.wav' -F "sourceCommandRequest={\"sourceId\":301};type=application/json" localhost:8080/sources/play
+
+curl -H "Content-Type:multipart/form-data" -F 'audioFile=@/Users/sdworman/laugh.wav' -F "sourceCommandRequest={\"sourceId\":201};type=application/json" localhost:8080/sources/play
+
+### change audio formats with ffmpeg
+
+https://askubuntu.com/questions/421607/how-to-convert-an-audio-streams-format
+
+ffmpeg -i laugh.wav -acodec s16be -ar 48000 laugh48-be.wav
