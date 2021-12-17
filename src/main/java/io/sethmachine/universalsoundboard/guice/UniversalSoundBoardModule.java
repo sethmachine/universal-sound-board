@@ -11,8 +11,8 @@ import com.hubspot.rosetta.jdbi3.RosettaRowMapperFactory;
 import io.dropwizard.Configuration;
 import io.dropwizard.jdbi3.JdbiFactory;
 import io.sethmachine.universalsoundboard.UniversalSoundBoardConfiguration;
-import io.sethmachine.universalsoundboard.core.concurrent.SinkAudioMixerRunnable;
 import io.sethmachine.universalsoundboard.core.concurrent.SinkAudioMixerRunnableFactory;
+import io.sethmachine.universalsoundboard.core.concurrent.source.PlayAudioToSourceRunnableFactory;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerWiringDAO;
 import io.sethmachine.universalsoundboard.db.daos.FoobarDAO;
@@ -39,6 +39,7 @@ public class UniversalSoundBoardModule extends DropwizardAwareModule<Configurati
       .setObjectMapper(bootstrap().getObjectMapper());
     bind(Jdbi.class).annotatedWith(Names.named("JDBI")).toInstance(jdbi);
     install(new FactoryModuleBuilder().build(SinkAudioMixerRunnableFactory.class));
+    install(new FactoryModuleBuilder().build(PlayAudioToSourceRunnableFactory.class));
 
     configuration();
     environment();
@@ -66,7 +67,7 @@ public class UniversalSoundBoardModule extends DropwizardAwareModule<Configurati
   @Provides
   @Singleton
   @Named("SinkThreadPoolExecutor")
-  public ThreadPoolExecutor provideThreadPoolExecutor() {
+  public ThreadPoolExecutor provideThreadPoolExecutorForSinks() {
     ThreadPoolExecutor tpe = new ThreadPoolExecutor(
       8,
       100,
@@ -74,7 +75,20 @@ public class UniversalSoundBoardModule extends DropwizardAwareModule<Configurati
       TimeUnit.SECONDS,
       new LinkedBlockingQueue()
     );
-    //    tpe.execute(new SinkAudioMixerRunnable(5));
+    return tpe;
+  }
+
+  @Provides
+  @Singleton
+  @Named("PlayAudioToSourceThreadPoolExecutor")
+  public ThreadPoolExecutor provideThreadPoolExecutorForPlayingAudioToSource() {
+    ThreadPoolExecutor tpe = new ThreadPoolExecutor(
+      8,
+      100,
+      60,
+      TimeUnit.SECONDS,
+      new LinkedBlockingQueue()
+    );
     return tpe;
   }
 
@@ -82,6 +96,13 @@ public class UniversalSoundBoardModule extends DropwizardAwareModule<Configurati
   @Singleton
   @Named("SinkEventBus")
   public EventBus provideEventBusForSinks() {
+    return new EventBus();
+  }
+
+  @Provides
+  @Singleton
+  @Named("SourceEventBus")
+  public EventBus provideEventBusForSources() {
     return new EventBus();
   }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import io.dropwizard.Application;
 import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -63,6 +64,7 @@ public class UniversalSoundBoardApplication
         }
       }
     );
+    bootstrap.addBundle(new MultiPartBundle());
     // TODO: application initialization
     //        String dbUrl = "jdbc:derby:/Users/sdworman/foobardb;create=true";
     //        try {
