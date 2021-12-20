@@ -9,4 +9,5 @@ import org.immutables.value.Value.Immutable;
 public interface AudioFileStreamIF {
   String getFilename();
   AudioInputStream getAudioInputStream();
+  int getTotalBytes();
 }

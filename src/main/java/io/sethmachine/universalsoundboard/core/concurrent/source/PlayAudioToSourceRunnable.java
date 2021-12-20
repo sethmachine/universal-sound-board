@@ -6,9 +6,8 @@ import com.google.inject.assistedinject.Assisted;
 import com.google.inject.name.Named;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.SourceAudioMixer;
 import io.sethmachine.universalsoundboard.core.model.concurrent.source.AudioFileStream;
-import java.io.File;
 import java.io.IOException;
-import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
@@ -52,6 +51,7 @@ public class PlayAudioToSourceRunnable implements Runnable {
 
   @Override
   public void run() {
+    validateAudioFormats();
     try {
       playAudio();
     } catch (LineUnavailableException | IOException e) {
@@ -74,11 +74,14 @@ public class PlayAudioToSourceRunnable implements Runnable {
     byte[] data = new byte[sourceDataLine.getBufferSize() / 5];
     int numBytesToRead = sourceDataLine.getBufferSize() / 5;
     int total = 0;
-    int totalToRead = audioFileStream.getAudioInputStream().available();
+
+    // docs say to NEVER rely on available() for total bytes in a stream
+    // so we should compute this elsewhere!
+    int totalToRead = audioFileStream.getTotalBytes();
 
     while (total < totalToRead) {
       numBytesRead = audioFileStream.getAudioInputStream().read(data, 0, numBytesToRead);
-      LOG.info("Read {} bytes from {}", numBytesRead, audioFileStream.getFilename());
+      LOG.trace("Read {} bytes from {}", numBytesRead, audioFileStream.getFilename());
       if (numBytesRead == -1) break;
       total += numBytesRead;
       sourceDataLine.write(data, 0, numBytesRead);
@@ -94,5 +97,18 @@ public class PlayAudioToSourceRunnable implements Runnable {
     sourceDataLine.stop();
     sourceDataLine.close();
     sourceDataLine.flush();
+  }
+
+  private void validateAudioFormats() {
+    AudioFormat sourceAudioFormat = source.getAudioFormat();
+    AudioFormat audioFileFormat = audioFileStream.getAudioInputStream().getFormat();
+    if (!audioFileFormat.matches(sourceAudioFormat)) {
+      LOG.warn(
+        "The audio formats of the source and the audio file do not match.  " +
+        "Audio playback may be distorted.  Source: {}, Audio File: {}",
+        sourceAudioFormat,
+        audioFileFormat
+      );
+    }
   }
 }
