@@ -12,7 +12,6 @@ import io.sethmachine.universalsoundboard.core.model.audiomixers.SourceAudioMixe
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Line;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;

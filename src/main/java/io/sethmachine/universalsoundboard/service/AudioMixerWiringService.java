@@ -1,6 +1,5 @@
 package io.sethmachine.universalsoundboard.service;
 
-import com.google.common.collect.ImmutableList;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerType;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.wiring.AudioMixerWiringPair;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;

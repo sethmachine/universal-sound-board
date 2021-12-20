@@ -9,6 +9,5 @@ import org.immutables.value.Value;
 @HubSpotStyle
 public interface AudioMixerMetadataQueryIF {
   Optional<AudioMixerType> getAudioMixerType();
-
   Optional<String> getAudioMixerName();
 }

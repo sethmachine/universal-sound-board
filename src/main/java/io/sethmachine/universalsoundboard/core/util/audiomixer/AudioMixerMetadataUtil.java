@@ -109,6 +109,7 @@ public class AudioMixerMetadataUtil {
         final DataLine.Info dataLineInfo = (DataLine.Info) targetInfo;
         return Stream
           .of(dataLineInfo.getFormats())
+          .filter(audioFormat -> !shouldFilterAudioFormat(audioFormat))
           .map(audioFormat ->
             AudioMixerDescriptionAndFormat
               .builder()
@@ -168,10 +169,16 @@ public class AudioMixerMetadataUtil {
       .build();
   }
 
-  private List<AudioFormat> filterAudioFormats(AudioFormat[] audioFormats) {
-    return Stream
-      .of(audioFormats)
-      .filter(audioFormat -> audioFormat.getFrameRate() > 0)
-      .collect(ImmutableList.toImmutableList());
+  private boolean shouldFilterAudioFormat(AudioFormat audioFormat) {
+    if (
+      (audioFormat.getFrameRate() == AudioSystem.NOT_SPECIFIED) ||
+      (audioFormat.getChannels() == AudioSystem.NOT_SPECIFIED) ||
+      (audioFormat.getSampleRate() == AudioSystem.NOT_SPECIFIED) ||
+      (audioFormat.getFrameSize() == AudioSystem.NOT_SPECIFIED) ||
+      (audioFormat.getSampleSizeInBits() == AudioSystem.NOT_SPECIFIED)
+    ) {
+      return true;
+    }
+    return false;
   }
 }
