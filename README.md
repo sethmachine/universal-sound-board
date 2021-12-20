@@ -240,7 +240,11 @@ curl -X POST -H "Content-Type: application/json" localhost:8080/sinks/start --da
 
 // sourceId 301 is my macbook speakers
 
-curl -H "Content-Type:multipart/form-data" -F 'audioFile=@/Users/sdworman/laugh.wav' -F "sourceCommandRequest={\"sourceId\":301};type=application/json" localhost:8080/sources/play
+curl -H "Content-Type:multipart/form-data" -F 'audioFile=@/Users/sdworman/laugh.wav' -F "sourceCommandRequest={\"sourceId\":301, \"reformat\":\"false\"};type=application/json" localhost:8080/sources/play
+
+curl -H "Content-Type:multipart/form-data" -F 'audioFile=@/Users/sdworman/laugh.wav' -F "sourceCommandRequest={\"sourceId\":301, \"reformat\":\"true\"};type=application/json" localhost:8080/sources/play
+
+curl -H "Content-Type:multipart/form-data" -F 'audioFile=@/Users/sdworman/laugh48.wav' -F "sourceCommandRequest={\"sourceId\":301};type=application/json" localhost:8080/sources/play
 
 curl -H "Content-Type:multipart/form-data" -F 'audioFile=@/Users/sdworman/laugh.wav' -F "sourceCommandRequest={\"sourceId\":301};type=application/json" localhost:8080/sources/play
 

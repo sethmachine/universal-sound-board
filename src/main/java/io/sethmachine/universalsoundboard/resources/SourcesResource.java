@@ -1,6 +1,6 @@
 package io.sethmachine.universalsoundboard.resources;
 
-import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.concurrent.SourceCommandRequest;
+import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.concurrent.PlayAudioFileToSourceAudioMixerRequest;
 import io.sethmachine.universalsoundboard.service.PlayAudioToSourceRunnableService;
 import java.io.InputStream;
 import javax.inject.Inject;
@@ -33,12 +33,13 @@ public class SourcesResource {
   public void playAudioFileToSource(
     @NotNull @FormDataParam(
       "sourceCommandRequest"
-    ) SourceCommandRequest sourceCommandRequest,
+    ) PlayAudioFileToSourceAudioMixerRequest playAudioFileToSourceAudioMixerRequest,
     @NotNull @FormDataParam("audioFile") InputStream uploadInputStream,
     @NotNull @FormDataParam("audioFile") FormDataContentDisposition fileDetail
   ) {
     playAudioToSourceRunnableService.playAudio(
-      sourceCommandRequest.getSourceId(),
+      playAudioFileToSourceAudioMixerRequest.getSourceId(),
+      playAudioFileToSourceAudioMixerRequest.getReformat(),
       uploadInputStream,
       fileDetail
     );

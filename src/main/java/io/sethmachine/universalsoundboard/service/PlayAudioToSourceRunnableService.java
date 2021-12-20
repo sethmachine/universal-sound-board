@@ -9,6 +9,7 @@ import io.sethmachine.universalsoundboard.core.concurrent.source.PlayAudioToSour
 import io.sethmachine.universalsoundboard.core.concurrent.source.PlayAudioToSourceRunnableFactory;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.SinkAudioMixer;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.SourceAudioMixer;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.audioformat.AudioFormatUtil;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.wiring.AudioMixerWiringPair;
 import io.sethmachine.universalsoundboard.core.model.concurrent.source.AudioFileStream;
 import java.io.BufferedInputStream;
@@ -58,6 +59,7 @@ public class PlayAudioToSourceRunnableService {
 
   public void playAudio(
     int sourceId,
+    boolean reformat,
     InputStream inputStream,
     FormDataContentDisposition fileDetail
   ) {
@@ -65,7 +67,8 @@ public class PlayAudioToSourceRunnableService {
     AudioFileStream audioFileStream = buildAudioFileStream(
       inputStream,
       fileDetail,
-      source.getAudioFormat()
+      source.getAudioFormat(),
+      reformat
     );
     PlayAudioToSourceRunnable playAudioToSourceRunnable = playAudioToSourceRunnableFactory.create(
       source,
@@ -79,7 +82,7 @@ public class PlayAudioToSourceRunnableService {
     if (source.isEmpty()) {
       throw new NotFoundException(
         String.format(
-          "No such sink audio mixer exists in the audio mixer table: id %d",
+          "No such source audio mixer exists in the audio mixer table: id %d",
           sourceId
         )
       );
@@ -90,24 +93,55 @@ public class PlayAudioToSourceRunnableService {
   private AudioFileStream buildAudioFileStream(
     InputStream inputStream,
     FormDataContentDisposition fileDetail,
-    AudioFormat sourceAudioFormat
+    AudioFormat sourceAudioFormat,
+    boolean reformat
   ) {
     try {
-      // since playback is done async, we have to read all the bytes when the audio file is uploaded
-      // otherwise we'll only get the first chunk of the audio and not play the full file!
+      byte[] allInputBytes = inputStream.readAllBytes();
+      AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(
+        new ByteArrayInputStream(allInputBytes)
+      );
+      if (reformat) {
+        if (!audioInputStream.getFormat().matches(sourceAudioFormat)) {
+          LOG.info(
+            "Attempting to reformat audio file input stream to match source audio mixer"
+          );
+          audioInputStream =
+            reformatAudioInputStream(audioInputStream, sourceAudioFormat);
+          LOG.info(
+            "Successfully reformatted audio file input stream to match source audio mixer format"
+          );
+        }
+      }
       return AudioFileStream
         .builder()
         .setFilename(fileDetail.getFileName())
-        .setAudioInputStream(
-          AudioSystem.getAudioInputStream(
-            new ByteArrayInputStream(inputStream.readAllBytes())
-          )
-        )
+        .setAudioInputStream(audioInputStream)
+        .setTotalBytes(allInputBytes.length)
         .build();
-    } catch (IOException | UnsupportedAudioFileException e) {
-      LOG.error("Failed to create audio file stream", e);
+    } catch (UnsupportedAudioFileException | IOException e) {
       e.printStackTrace();
+      LOG.error(
+        "Unable to read input file {} into an audio input stream",
+        fileDetail.getFileName(),
+        e
+      );
+      throw new RuntimeException(e);
     }
-    throw new RuntimeException("Failed to create audio file stream");
+  }
+
+  private static AudioInputStream reformatAudioInputStream(
+    AudioInputStream audioInputStream,
+    AudioFormat targetFormat
+  ) {
+    if (AudioSystem.isConversionSupported(targetFormat, audioInputStream.getFormat())) {
+      return AudioSystem.getAudioInputStream(targetFormat, audioInputStream);
+    }
+    LOG.error(
+      "Conversion between formats unsupported.  Source format: {},  Target format: {}",
+      audioInputStream.getFormat(),
+      targetFormat
+    );
+    return audioInputStream;
   }
 }
