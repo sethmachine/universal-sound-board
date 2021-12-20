@@ -1,5 +1,7 @@
-template: Hello, %s!
-defaultName: Stranger
+server:
+  applicationConnectors:
+    - type: http
+      port: 8080
 
 logging:
 
@@ -23,7 +25,7 @@ database:
   password: derby
 
   # the JDBC URL
-  url: jdbc:derby:/Users/sdworman/derbyDB;create=true
+  url: jdbc:derby:usbDerbyDB;create=true
 
   # any properties specific to your JDBC driver:
   properties:

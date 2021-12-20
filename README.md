@@ -255,3 +255,20 @@ curl -H "Content-Type:multipart/form-data" -F 'audioFile=@/Users/sdworman/laugh.
 https://askubuntu.com/questions/421607/how-to-convert-an-audio-streams-format
 
 ffmpeg -i laugh.wav -acodec s16be -ar 48000 laugh48-be.wav
+
+### Override configurations
+
+This overrides where the database is stored:
+
+-Ddw.database.url=jdbc:derby:</path/to/database>;create=true
+
+where `</path/to/database/>` is any path to where the database is to exist (properly formatted for the operating system).  E.g. it might `/Users/foobar/myUsbDerbyDb` on macOS but 
+`C:\opt\myUsbDerbyDb` on Windows.  
+
+This overrides the port the application runs on:
+
+-Ddw.server.applicationConnectors[0].port=9999
+
+You would only override the port if you had some very specific setup or other applications 
+running on the default port of `8080`.  
+
