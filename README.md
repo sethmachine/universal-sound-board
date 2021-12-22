@@ -130,6 +130,10 @@ Get it's audio formats and choose one
 
 --data-urlencode "paramName=value"
 
+"Bose QC35 II"
+
+curl -G --data-urlencode "audioMixerName=Bose QC35 II" "localhost:8080/audio-mixer-metadata/audio-formats" | python -m json.tool
+
 curl -G --data-urlencode "audioMixerName=MacBook Pro Microphone" "localhost:8080/audio-mixer-metadata/audio-formats" | python -m json.tool
 
 curl -G --data-urlencode "audioMixerName=BlackHole 2ch" --data-urlencode "audioMixerType=SOURCE" "localhost:8080/audio-mixer-metadata/audio-formats" | python -m json.tool
@@ -168,6 +172,10 @@ curl -G --data-urlencode "audioMixerName=BlackHole 2ch" --data-urlencode "audioM
 {"audioMixerDescription":{"name":"MacBook Pro Speakers","vendor":"Apple Inc.","description":"Direct Audio Device: MacBook Pro Speakers","version":"Unknown Version","supportedAudioMixerTypes":["SOURCE"]},"audioFormat":{"encoding":{"name":"PCM_SIGNED"},"sampleRate":48000.0,"sampleSizeInBits":16,"channels":2,"frameSize":4,"frameRate":48000.0,"bigEndian":false},"audioMixerTypeForFormat":"SOURCE","dataLineName":"interface SourceDataLine supporting 14 audio formats, and buffers of at least 32 bytes"}
 
 #### Create the audio mixer
+
+Bose headphones microphone sink
+
+curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixers --data '{"audioMixerDescription":{"name":"Bose QC35 II","vendor":"9e","description":"Direct Audio Device: Bose QC35 II","version":"Unknown Version","supportedAudioMixerTypes":["SINK"]},"audioFormat":{"encoding":{"name":"PCM_UNSIGNED"},"sampleRate":-1.0,"sampleSizeInBits":8,"channels":1,"frameSize":1,"frameRate":-1.0,"bigEndian":false},"audioMixerTypeForFormat":"SINK","dataLineName":"interface TargetDataLine supporting 8 audio formats, and buffers of at least 32 bytes"}'
 
 MAcbook speakers
 
@@ -231,9 +239,14 @@ Wire audio devices together:
 curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixer-wiring --data '{"sinkId":1,
 "sourceId":2}'
 
+curl -X POST -H "Content-Type: application/json" localhost:8080/audio-mixer-wiring --data '{"sinkId":501,
+"sourceId":401}'
+
 Start a sink
 
 curl -X POST -H "Content-Type: application/json" localhost:8080/sinks/start --data '{"sinkId": 1}'
+
+curl -X POST -H "Content-Type: application/json" localhost:8080/sinks/start --data '{"sinkId": 501}'
 
 
 ### upload files and play audio clips
