@@ -2,11 +2,9 @@ package io.sethmachine.universalsoundboard.resources;
 
 import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.AudioMixerDescriptionsResponse;
 import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.SingleAudioMixerDescriptionAndFormatsResponse;
-import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerDescriptionAndFormat;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerType;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.query.AudioMixerMetadataQuery;
 import io.sethmachine.universalsoundboard.service.api.AudioMixerMetadataApiService;
-import java.util.List;
 import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;

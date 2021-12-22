@@ -14,12 +14,10 @@ import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.mixins
 import io.sethmachine.universalsoundboard.db.liquibase.LiquibaseMigrator;
 import io.sethmachine.universalsoundboard.guice.UniversalSoundBoardModule;
 import io.sethmachine.universalsoundboard.health.DatabaseHealthCheck;
-import io.sethmachine.universalsoundboard.health.TemplateHealthCheck;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioFormat.Encoding;
-import liquibase.database.Database;
 import liquibase.exception.LiquibaseException;
 import ru.vyarus.dropwizard.guice.GuiceBundle;
 

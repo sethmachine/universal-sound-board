@@ -6,19 +6,10 @@ import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.AudioMix
 import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.AudioMixersList;
 import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.CreateAudioMixerRequest;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.AudioMixerBase;
-import io.sethmachine.universalsoundboard.core.model.audiomixers.SinkAudioMixer;
-import io.sethmachine.universalsoundboard.core.model.audiomixers.SourceAudioMixer;
-import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerDescription;
-import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerType;
-import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.query.AudioMixerMetadataQuery;
 import io.sethmachine.universalsoundboard.core.util.audiomixer.AudioMixerMetadataUtil;
-import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;
-import io.sethmachine.universalsoundboard.db.model.audiomixer.AudioMixerInsert;
-import io.sethmachine.universalsoundboard.db.model.audiomixer.AudioMixerRow;
 import io.sethmachine.universalsoundboard.service.AudioMixersService;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.sound.sampled.Mixer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
