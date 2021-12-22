@@ -3,8 +3,6 @@ package io.sethmachine.universalsoundboard.resources;
 import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.wiring.AudioMixerWiringList;
 import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.wiring.WireSinkToSourceRequest;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.wiring.AudioMixerWiringPair;
-import io.sethmachine.universalsoundboard.db.model.audiomixer.wiring.AudioMixerWiringRow;
-import io.sethmachine.universalsoundboard.service.AudioMixerWiringService;
 import io.sethmachine.universalsoundboard.service.api.AudioMixerWiringApiService;
 import java.util.Optional;
 import javax.inject.Inject;
