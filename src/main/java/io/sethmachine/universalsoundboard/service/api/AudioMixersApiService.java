@@ -52,6 +52,10 @@ public class AudioMixersApiService {
     return audioMixersService.createAudioMixer(createAudioMixerRequest);
   }
 
+  public void deleteAudioMixer(int audioMixerId) {
+    audioMixersService.deleteAudioMixer(audioMixerId);
+  }
+
   private AudioMixerResponse buildResponseFromMixer(AudioMixerBase mixer) {
     return AudioMixerResponse
       .builder()

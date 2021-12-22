@@ -8,6 +8,7 @@ import io.sethmachine.universalsoundboard.service.api.AudioMixersApiService;
 import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -43,5 +44,11 @@ public class AudioMixersResource {
   @GET
   public AudioMixersList getAllAudioMixers() {
     return audioMixersApiService.getAllAudioMixers();
+  }
+
+  @DELETE
+  @Path("/{audioMixerId}")
+  public void deleteAudioMixer(@PathParam("audioMixerId") int audioMixerId) {
+    audioMixersApiService.deleteAudioMixer(audioMixerId);
   }
 }

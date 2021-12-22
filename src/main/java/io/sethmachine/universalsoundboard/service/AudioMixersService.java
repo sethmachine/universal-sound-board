@@ -80,6 +80,10 @@ public class AudioMixersService {
       .build();
   }
 
+  public void deleteAudioMixer(int audioMixerId) {
+    audioMixerDAO.deleteAudioMixer(audioMixerId);
+  }
+
   private Optional<AudioMixerBase> generateAudioMixerBaseFromRow(
     AudioMixerRow audioMixerRow
   ) {
