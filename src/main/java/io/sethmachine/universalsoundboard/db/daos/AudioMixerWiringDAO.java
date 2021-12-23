@@ -42,4 +42,15 @@ public interface AudioMixerWiringDAO {
 
   @SqlQuery("SELECT * FROM audio_mixer_wiring")
   List<AudioMixerWiringRow> getAllWirings();
+
+  @SqlUpdate(
+    "DELETE FROM audio_mixer_wiring WHERE \"sinkId\" = :sinkId AND \"sourceId\" = :sourceId"
+  )
+  void deleteSingleWiring(@Bind("sinkId") int sinkId, @Bind("sourceId") int sourceId);
+
+  @SqlUpdate("DELETE FROM audio_mixer_wiring WHERE \"sinkId\" = :sinkId")
+  void deleteAllSinkWirings(@Bind("sinkId") int sinkId);
+
+  @SqlUpdate("DELETE FROM audio_mixer_wiring WHERE \"sourceId\" = :sourceId")
+  void deleteAllSourceWirings(@Bind("sourceId") int sourceId);
 }

@@ -53,4 +53,16 @@ public class AudioMixerWiringApiService {
       .setWirings(audioMixerWiringService.getAllWirings())
       .build();
   }
+
+  public void deleteSingleWiring(int sinkId, int sourceId) {
+    audioMixerWiringService.deleteSingleWiring(sinkId, sourceId);
+  }
+
+  public void deleteAllSinkWirings(int sinkId) {
+    audioMixerWiringService.deleteAllSinkWirings(sinkId);
+  }
+
+  public void deleteAllSourceWirings(int sourceId) {
+    audioMixerWiringService.deleteAllSourceWirings(sourceId);
+  }
 }

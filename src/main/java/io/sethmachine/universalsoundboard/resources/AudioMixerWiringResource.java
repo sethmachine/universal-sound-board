@@ -7,6 +7,7 @@ import io.sethmachine.universalsoundboard.service.api.AudioMixerWiringApiService
 import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -55,5 +56,26 @@ public class AudioMixerWiringResource {
   @Path("/source/{sourceId}")
   public AudioMixerWiringList getSourceWirings(@PathParam("sourceId") int sourceId) {
     return audioMixerWiringApiService.getSourceWirings(sourceId);
+  }
+
+  @DELETE
+  @Path("/{sinkId}/{sourceId}")
+  public void deleteSingleWiring(
+    @PathParam("sinkId") int sinkId,
+    @PathParam("sourceId") int sourceId
+  ) {
+    audioMixerWiringApiService.deleteSingleWiring(sinkId, sourceId);
+  }
+
+  @DELETE
+  @Path("/sink/{sinkId}")
+  public void deleteAllSinkWirings(@PathParam("sinkId") int sinkId) {
+    audioMixerWiringApiService.deleteAllSinkWirings(sinkId);
+  }
+
+  @DELETE
+  @Path("/source/{sourceId}")
+  public void deleteAllSourceWirings(@PathParam("sourceId") int sourceId) {
+    audioMixerWiringApiService.deleteAllSourceWirings(sourceId);
   }
 }

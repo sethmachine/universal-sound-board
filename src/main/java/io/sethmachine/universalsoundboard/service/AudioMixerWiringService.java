@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AudioMixerWiringService {
-
   private static final Logger LOG = LoggerFactory.getLogger(
     AudioMixerWiringService.class
   );
@@ -64,20 +63,6 @@ public class AudioMixerWiringService {
     audioMixerWiringDAO.insert(insert);
   }
 
-  private void validateSinkAndSourceWiring(AudioMixerRow sink, AudioMixerRow source) {
-    if (sink.getAudioMixerType() != AudioMixerType.SINK) {
-      throw new IllegalArgumentException(
-        "The audio mixer used for a sink must actually be a sink"
-      );
-    }
-
-    if (source.getAudioMixerType() != AudioMixerType.SOURCE) {
-      throw new IllegalArgumentException(
-        "The audio mixer used for a source must actually be a source"
-      );
-    }
-  }
-
   public Optional<AudioMixerWiringPair> getWiring(int sinkId, int sourceId) {
     return audioMixerWiringDAO
       .get(sinkId, sourceId)
@@ -106,6 +91,32 @@ public class AudioMixerWiringService {
       .stream()
       .map(this::buildPairFromAudioWiringRow)
       .collect(Collectors.toList());
+  }
+
+  public void deleteSingleWiring(int sinkId, int sourceId) {
+    audioMixerWiringDAO.deleteSingleWiring(sinkId, sourceId);
+  }
+
+  public void deleteAllSinkWirings(int sinkId) {
+    audioMixerWiringDAO.deleteAllSinkWirings(sinkId);
+  }
+
+  public void deleteAllSourceWirings(int sourceId) {
+    audioMixerWiringDAO.deleteAllSourceWirings(sourceId);
+  }
+
+  private void validateSinkAndSourceWiring(AudioMixerRow sink, AudioMixerRow source) {
+    if (sink.getAudioMixerType() != AudioMixerType.SINK) {
+      throw new IllegalArgumentException(
+        "The audio mixer used for a sink must actually be a sink"
+      );
+    }
+
+    if (source.getAudioMixerType() != AudioMixerType.SOURCE) {
+      throw new IllegalArgumentException(
+        "The audio mixer used for a source must actually be a source"
+      );
+    }
   }
 
   private AudioMixerWiringPair buildPairFromAudioWiringRow(AudioMixerWiringRow row) {
