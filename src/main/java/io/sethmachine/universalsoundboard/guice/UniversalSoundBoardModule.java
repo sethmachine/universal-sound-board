@@ -15,7 +15,6 @@ import io.sethmachine.universalsoundboard.core.concurrent.SinkAudioMixerRunnable
 import io.sethmachine.universalsoundboard.core.concurrent.source.PlayAudioToSourceRunnableFactory;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerWiringDAO;
-import io.sethmachine.universalsoundboard.db.daos.FoobarDAO;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -44,12 +43,6 @@ public class UniversalSoundBoardModule extends DropwizardAwareModule<Configurati
     configuration();
     environment();
     bootstrap();
-  }
-
-  @Provides
-  @Singleton
-  public FoobarDAO provideFoobarDAO(@Named("JDBI") Jdbi jdbi) {
-    return jdbi.onDemand(FoobarDAO.class);
   }
 
   @Provides

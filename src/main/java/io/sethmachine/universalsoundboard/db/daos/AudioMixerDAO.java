@@ -32,4 +32,7 @@ public interface AudioMixerDAO {
 
   @SqlQuery("SELECT * FROM audio_mixer FETCH FIRST 1000 ROWS ONLY")
   List<AudioMixerRow> getAll();
+
+  @SqlUpdate("DELETE FROM audio_mixer WHERE \"id\" = :id")
+  void deleteAudioMixer(@Bind("id") int id);
 }
