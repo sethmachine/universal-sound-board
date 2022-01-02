@@ -2,17 +2,15 @@ package io.sethmachine.universalsoundboard.service;
 
 import com.google.common.eventbus.EventBus;
 import com.google.inject.name.Named;
-import io.sethmachine.universalsoundboard.core.concurrent.SinkAudioMixerRunnable;
-import io.sethmachine.universalsoundboard.core.concurrent.SinkAudioMixerRunnableFactory;
+import io.sethmachine.universalsoundboard.core.concurrent.sink.SinkAudioMixerRunnable;
+import io.sethmachine.universalsoundboard.core.concurrent.sink.SinkAudioMixerRunnableFactory;
 import io.sethmachine.universalsoundboard.core.concurrent.sink.StopSinkEvent;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.SinkAudioMixer;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.SourceAudioMixer;
-import io.sethmachine.universalsoundboard.core.model.audiomixers.wiring.AudioMixerWiringPair;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.stream.Collectors;
 import javax.inject.Inject;
+import javax.ws.rs.NotAllowedException;
 import javax.ws.rs.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,10 +43,27 @@ public class SinkAudioMixerRunnableService {
   }
 
   public void startSink(int sinkId) {
-    SinkAudioMixer sink = validateAndGetSink(sinkId);
-    List<SourceAudioMixer> sources = getSourceMixersFromWirings(
+    SinkAudioMixer sink = audioMixersService
+      .getSinkAudioMixer(sinkId)
+      .orElseThrow(() ->
+        new NotFoundException(
+          String.format(
+            "No such sink audio mixer exists in the audio mixer table: id %d",
+            sinkId
+          )
+        )
+      );
+    List<SourceAudioMixer> sources = audioMixerWiringService.getSourceMixersFromWirings(
       audioMixerWiringService.getSinkWirings(sinkId)
     );
+    if (sources.isEmpty()) {
+      throw new NotAllowedException(
+        String.format(
+          "Unable to start the sink with id %d as it does not have any sources wired to it.",
+          sinkId
+        )
+      );
+    }
     SinkAudioMixerRunnable sinkAudioMixerRunnable = sinkAudioMixerRunnableFactory.create(
       sink,
       sources
@@ -57,35 +72,20 @@ public class SinkAudioMixerRunnableService {
   }
 
   public void stopSink(int sinkId) {
-    SinkAudioMixer sink = validateAndGetSink(sinkId);
+    audioMixersService
+      .getSinkAudioMixer(sinkId)
+      .orElseThrow(() ->
+        new NotFoundException(
+          String.format(
+            "No such sink audio mixer exists in the audio mixer table: id %d",
+            sinkId
+          )
+        )
+      );
     eventBus.post(StopSinkEvent.builder().setSinkId(sinkId).build());
   }
 
   public int getTotalActiveSinks() {
     return this.sinkThreadPoolExecutor.getActiveCount();
-  }
-
-  private SinkAudioMixer validateAndGetSink(int sinkId) {
-    Optional<SinkAudioMixer> sink = audioMixersService.getSinkAudioMixer(sinkId);
-    if (sink.isEmpty()) {
-      throw new NotFoundException(
-        String.format(
-          "No such sink audio mixer exists in the audio mixer table: id %d",
-          sinkId
-        )
-      );
-    }
-    return sink.get();
-  }
-
-  private List<SourceAudioMixer> getSourceMixersFromWirings(
-    List<AudioMixerWiringPair> wirings
-  ) {
-    return wirings
-      .stream()
-      .map(wiring -> audioMixersService.getSourceAudioMixer(wiring.getSourceId()))
-      .filter(Optional::isPresent)
-      .map(Optional::get)
-      .collect(Collectors.toList());
   }
 }
