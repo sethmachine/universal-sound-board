@@ -3,8 +3,7 @@ This template outlines a series of steps you should take to make sure your chang
 
 Before merging, make sure the prettier-maven-plugin has been run by building locally: https://github.com/HubSpot/prettier-maven-plugin
 
-The issue should link to an existing GitHub issue, or documentation of what is being addressed by the PR.  
-
+The issue should link to an existing GitHub issue, or documentation of what is being addressed by the PR.
 -->
 ### Description
 
