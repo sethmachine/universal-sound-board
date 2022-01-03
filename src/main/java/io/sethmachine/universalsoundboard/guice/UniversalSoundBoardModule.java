@@ -11,7 +11,7 @@ import com.hubspot.rosetta.jdbi3.RosettaRowMapperFactory;
 import io.dropwizard.Configuration;
 import io.dropwizard.jdbi3.JdbiFactory;
 import io.sethmachine.universalsoundboard.UniversalSoundBoardConfiguration;
-import io.sethmachine.universalsoundboard.core.concurrent.SinkAudioMixerRunnableFactory;
+import io.sethmachine.universalsoundboard.core.concurrent.sink.SinkAudioMixerRunnableFactory;
 import io.sethmachine.universalsoundboard.core.concurrent.source.PlayAudioToSourceRunnableFactory;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerWiringDAO;

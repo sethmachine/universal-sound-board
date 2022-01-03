@@ -263,6 +263,10 @@ curl -H "Content-Type:multipart/form-data" -F 'audioFile=@/Users/sdworman/laugh.
 
 curl -H "Content-Type:multipart/form-data" -F 'audioFile=@/Users/sdworman/laugh.wav' -F "sourceCommandRequest={\"sourceId\":201};type=application/json" localhost:8080/sources/play
 
+sound board resource, "play" to a sink and a source simultaneously
+
+curl -H "Content-Type:multipart/form-data" -F 'audioFile=@/Users/sdworman/laugh.wav' -F "playAudioFileToSourceAndSinkRequest={\"sinkId\":1, \"sourceId\":301, \"reformat\":\"true\"};type=application/json" localhost:8080/sound-board/play
+
 ### change audio formats with ffmpeg
 
 https://askubuntu.com/questions/421607/how-to-convert-an-audio-streams-format

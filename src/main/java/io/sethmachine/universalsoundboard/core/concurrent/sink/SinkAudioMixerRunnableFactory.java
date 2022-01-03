@@ -1,4 +1,4 @@
-package io.sethmachine.universalsoundboard.core.concurrent;
+package io.sethmachine.universalsoundboard.core.concurrent.sink;
 
 import io.sethmachine.universalsoundboard.core.model.audiomixers.SinkAudioMixer;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.SourceAudioMixer;

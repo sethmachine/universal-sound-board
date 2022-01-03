@@ -1,8 +1,10 @@
 package io.sethmachine.universalsoundboard.service;
 
+import com.google.common.collect.ImmutableList;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.SinkAudioMixer;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.SourceAudioMixer;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerType;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.wiring.AudioMixerWiringPair;
-import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerWiringDAO;
 import io.sethmachine.universalsoundboard.db.model.audiomixer.AudioMixerRow;
 import io.sethmachine.universalsoundboard.db.model.audiomixer.wiring.AudioMixerWiringInsert;
@@ -16,25 +18,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AudioMixerWiringService {
+
   private static final Logger LOG = LoggerFactory.getLogger(
     AudioMixerWiringService.class
   );
 
-  private final AudioMixerDAO audioMixerDAO;
+  private final AudioMixersService audioMixersService;
   private final AudioMixerWiringDAO audioMixerWiringDAO;
 
   @Inject
   public AudioMixerWiringService(
-    AudioMixerDAO audioMixerDAO,
+    AudioMixersService audioMixersService,
     AudioMixerWiringDAO audioMixerWiringDAO
   ) {
-    this.audioMixerDAO = audioMixerDAO;
+    this.audioMixersService = audioMixersService;
     this.audioMixerWiringDAO = audioMixerWiringDAO;
   }
 
   public void wireSinkToSource(int sinkId, int sourceId) throws NotFoundException {
-    Optional<AudioMixerRow> maybeSink = audioMixerDAO.get(sinkId);
-    Optional<AudioMixerRow> maybeSource = audioMixerDAO.get(sourceId);
+    Optional<SinkAudioMixer> maybeSink = audioMixersService.getSinkAudioMixer(sinkId);
+    Optional<SourceAudioMixer> maybeSource = audioMixersService.getSourceAudioMixer(
+      sourceId
+    );
     if (maybeSink.isEmpty()) {
       throw new NotFoundException(
         String.format(
@@ -51,14 +56,13 @@ public class AudioMixerWiringService {
         )
       );
     }
-    validateSinkAndSourceWiring(maybeSink.get(), maybeSource.get());
 
     AudioMixerWiringInsert insert = AudioMixerWiringInsert
       .builder()
       .setSinkId(sinkId)
-      .setSinkName(maybeSink.get().getName())
+      .setSinkName(maybeSink.get().getAudioMixerDescription().getName())
       .setSourceId(sourceId)
-      .setSourceName(maybeSource.get().getName())
+      .setSourceName(maybeSource.get().getAudioMixerDescription().getName())
       .build();
     audioMixerWiringDAO.insert(insert);
   }
@@ -103,6 +107,17 @@ public class AudioMixerWiringService {
 
   public void deleteAllSourceWirings(int sourceId) {
     audioMixerWiringDAO.deleteAllSourceWirings(sourceId);
+  }
+
+  public List<SourceAudioMixer> getSourceMixersFromWirings(
+    List<AudioMixerWiringPair> wirings
+  ) {
+    return wirings
+      .stream()
+      .map(wiring -> audioMixersService.getSourceAudioMixer(wiring.getSourceId()))
+      .filter(Optional::isPresent)
+      .map(Optional::get)
+      .collect(ImmutableList.toImmutableList());
   }
 
   private void validateSinkAndSourceWiring(AudioMixerRow sink, AudioMixerRow source) {

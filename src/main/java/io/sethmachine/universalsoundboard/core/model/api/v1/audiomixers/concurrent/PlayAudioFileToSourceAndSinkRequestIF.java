@@ -5,5 +5,6 @@ import org.immutables.value.Value.Immutable;
 
 @Immutable
 @HubSpotStyle
-public interface PlayAudioFileToSourceAudioMixerRequestIF
-  extends PlayAudioFileRequestCore {}
+public interface PlayAudioFileToSourceAndSinkRequestIF extends PlayAudioFileRequestCore {
+  int getSinkId();
+}
