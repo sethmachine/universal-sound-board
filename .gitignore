@@ -27,3 +27,6 @@ hs_err_pid*
 .run
 .DS_Store
 target
+
+# Local scratch files
+scratch.md
