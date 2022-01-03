@@ -30,8 +30,32 @@ public class AudioFormatUtil {
   ) {
     try {
       byte[] allInputBytes = inputStream.readAllBytes();
+      return createAudioFileStream(
+        fileDetail,
+        allInputBytes,
+        targetAudioFormat,
+        reformat
+      );
+    } catch (IOException e) {
+      e.printStackTrace();
+      LOG.error(
+        "Unable to read audio bytes from input file {}",
+        fileDetail.getFileName(),
+        e
+      );
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static AudioFileStream createAudioFileStream(
+    FormDataContentDisposition fileDetail,
+    byte[] audioFileBytes,
+    AudioFormat targetAudioFormat,
+    boolean reformat
+  ) {
+    try {
       AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(
-        new ByteArrayInputStream(allInputBytes)
+        new ByteArrayInputStream(audioFileBytes)
       );
       if (reformat) {
         if (!audioInputStream.getFormat().matches(targetAudioFormat)) {
@@ -49,12 +73,12 @@ public class AudioFormatUtil {
         .builder()
         .setFilename(fileDetail.getFileName())
         .setAudioInputStream(audioInputStream)
-        .setTotalBytes(allInputBytes.length)
+        .setTotalBytes(audioFileBytes.length)
         .build();
     } catch (UnsupportedAudioFileException | IOException e) {
       e.printStackTrace();
       LOG.error(
-        "Unable to read input file {} into an audio input stream",
+        "Unable to read audio bytes from input file {} into an audio input stream",
         fileDetail.getFileName(),
         e
       );
@@ -103,6 +127,14 @@ public class AudioFormatUtil {
     }
     return audioFormat;
   }
+
+  //  private static void readAllInputBytes(){
+  //    byte[] allInputBytes = inputStream.readAllBytes();
+  //    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(
+  //        new ByteArrayInputStream(allInputBytes)
+  //    );
+  //    return
+  //  }
 
   private static AudioInputStream reformatAudioInputStream(
     AudioInputStream audioInputStream,

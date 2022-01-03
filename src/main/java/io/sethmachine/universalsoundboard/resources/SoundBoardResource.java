@@ -1,7 +1,7 @@
 package io.sethmachine.universalsoundboard.resources;
 
 import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.concurrent.PlayAudioFileToSourceAndSinkRequest;
-import io.sethmachine.universalsoundboard.service.PlayAudioToSourceRunnableService;
+import io.sethmachine.universalsoundboard.service.SoundBoardService;
 import java.io.InputStream;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
@@ -18,13 +18,11 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 @Consumes(MediaType.APPLICATION_JSON)
 public class SoundBoardResource {
 
-  private final PlayAudioToSourceRunnableService playAudioToSourceRunnableService;
+  private final SoundBoardService soundBoardService;
 
   @Inject
-  public SoundBoardResource(
-    PlayAudioToSourceRunnableService playAudioToSourceRunnableService
-  ) {
-    this.playAudioToSourceRunnableService = playAudioToSourceRunnableService;
+  public SoundBoardResource(SoundBoardService soundBoardService) {
+    this.soundBoardService = soundBoardService;
   }
 
   @POST
@@ -37,11 +35,12 @@ public class SoundBoardResource {
     @NotNull @FormDataParam("audioFile") InputStream uploadInputStream,
     @NotNull @FormDataParam("audioFile") FormDataContentDisposition fileDetail
   ) {
-    //    playAudioToSourceRunnableService.playAudio(
-    //      playAudioFileToSourceAudioMixerRequest.getSourceId(),
-    //      playAudioFileToSourceAudioMixerRequest.getReformat(),
-    //      uploadInputStream,
-    //      fileDetail
-    //    );
+    soundBoardService.playAudioToSourceAndSink(
+      playAudioFileToSourceAndSinkRequest.getSourceId(),
+      playAudioFileToSourceAndSinkRequest.getSinkId(),
+      playAudioFileToSourceAndSinkRequest.getReformat(),
+      uploadInputStream,
+      fileDetail
+    );
   }
 }

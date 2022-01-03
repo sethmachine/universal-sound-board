@@ -1,11 +1,10 @@
 package io.sethmachine.universalsoundboard.service;
 
-import io.sethmachine.universalsoundboard.core.model.audiomixers.AudioMixerBase;
+import com.google.common.collect.ImmutableList;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.SinkAudioMixer;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.SourceAudioMixer;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerType;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.wiring.AudioMixerWiringPair;
-import io.sethmachine.universalsoundboard.db.daos.AudioMixerDAO;
 import io.sethmachine.universalsoundboard.db.daos.AudioMixerWiringDAO;
 import io.sethmachine.universalsoundboard.db.model.audiomixer.AudioMixerRow;
 import io.sethmachine.universalsoundboard.db.model.audiomixer.wiring.AudioMixerWiringInsert;
@@ -118,7 +117,7 @@ public class AudioMixerWiringService {
       .map(wiring -> audioMixersService.getSourceAudioMixer(wiring.getSourceId()))
       .filter(Optional::isPresent)
       .map(Optional::get)
-      .collect(Collectors.toList());
+      .collect(ImmutableList.toImmutableList());
   }
 
   private void validateSinkAndSourceWiring(AudioMixerRow sink, AudioMixerRow source) {
