@@ -128,14 +128,6 @@ public class AudioFormatUtil {
     return audioFormat;
   }
 
-  //  private static void readAllInputBytes(){
-  //    byte[] allInputBytes = inputStream.readAllBytes();
-  //    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(
-  //        new ByteArrayInputStream(allInputBytes)
-  //    );
-  //    return
-  //  }
-
   private static AudioInputStream reformatAudioInputStream(
     AudioInputStream audioInputStream,
     AudioFormat targetFormat

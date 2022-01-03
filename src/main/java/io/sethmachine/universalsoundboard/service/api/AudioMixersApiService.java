@@ -18,15 +18,10 @@ public class AudioMixersApiService {
   private static final Logger LOG = LoggerFactory.getLogger(AudioMixerMetadataUtil.class);
 
   private final AudioMixersService audioMixersService;
-  private final AudioMixerMetadataUtil audioMixerMetadataUtil;
 
   @Inject
-  public AudioMixersApiService(
-    AudioMixersService audioMixersService,
-    AudioMixerMetadataUtil audioMixerMetadataUtil
-  ) {
+  public AudioMixersApiService(AudioMixersService audioMixersService) {
     this.audioMixersService = audioMixersService;
-    this.audioMixerMetadataUtil = audioMixerMetadataUtil;
   }
 
   public Optional<AudioMixerResponse> getAudioMixer(int audioMixerId) {
