@@ -94,9 +94,11 @@ public class PlayAudioToSourceRunnable implements Runnable {
    * Close the source data line after finishing play back.
    */
   private void cleanUp(SourceDataLine sourceDataLine) {
+    LOG.info("SOURCE DATA LINE AVAILABLE BEFORE CLEANUP: {}", sourceDataLine.available());
     sourceDataLine.stop();
     sourceDataLine.close();
     sourceDataLine.flush();
+    LOG.info("SOURCE DATA LINE AVAILABLE AFTER CLEANUP: {}", sourceDataLine.available());
   }
 
   private void validateAudioFormats() {

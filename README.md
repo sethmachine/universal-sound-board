@@ -643,9 +643,88 @@ The following command will play `evil-laugh.wav` as if it came through your micr
 curl -X POST -H "Content-Type:multipart/form-data" localhost:8080/sources/play -F "audioFile=@evil-laugh.wav" -F "sourceCommandRequest={\"sourceId\":101};type=application/json"
 ```
 
+Note that we are playing the audio file to the source and not the microphone, but the net effect is that the audio file is played as if it came through the microphone.  
 
+To confirm this you could have another account in a Discord voice chat channel and listen for the sound.  You could also perform the same mic test and voice activity should be detected.  
 
- 
+If you aren't hearing anything, there are 2 Discord specific settings we can tune:
+
+#### Disable Discord Advanced Voice Activity
+
+This setting on Discord attempts to only send actual human voice and ignore all other sound.  We can't control what Discord thinks is human voice, so disabling this will make sure our audio file gets through to the voice chat.  
+
+Head to Settings (gear icon) > App Settings > Voice & Video > Advanced.  Then toggle off `Advanced Voice Activity`, as shown below:
+
+![Discord Disable Advanced Voice Activity Detection](examples/discord-disable-advanced-voice-activity.png)
+
+#### Lower Discord Voice Activity Sensitivity
+
+Another option to tune is Discord's sensitivity to voice activity.  This is the threshold where Discord thinks there is input coming to the microphone (as opposed to noise like keyboard strokes, etc.).  Setting this to a lower value (moving the slider to the left) should increase the likelihood that audio clips play through the microphone.  
+
+![Discord Lower Voice Activity Sensitivity](examples/discord-lower-voice-activity-sensitivity.png)
+
+### Playing a sound simultaneously to microphone and speakers
+
+We're now able to use our microphone normally while also being able to play audio files as if they came through the microphone.  However, on our end we won't hear the sound we are playing, only those on the other end of the voice chat application.  The server provides an API to do just that, so both you and your audience will hear the same sound effect being played:
+
+```shell
+curl -X POST -H "Content-Type:multipart/form-data" localhost:8080/sound-board/play -F "audioFile=@evil-laugh.wav" -F "playAudioFileToSourceAndSinkRequest={\"sinkId\": YOUR_SINK_ID, \"sourceId\":YOUR_AUDIO_OUTPUT_DEVICE_ID};type=application/json" 
+```
+
+* `YOUR_SINK_ID` corresponds to the sink we set up in previous steps (in our case it is ID `1`)
+* `YOUR_AUDIO_OUTPUT_DEVICE_ID` would be the ID of a source that corresponds to an audio output device on our computer (e.g. physical speakers).
+
+We can follow [the steps to set up a source](#setting-up-a-source) except this time for an audio output device of our choice, e.g. physical speakers, our headset's output, etc.  
+
+Since I'm already using my headset as a microphone, I'll use it as my speakers.  Here is what I'll be sending to the server as `bose-output-hands-free.json`
+
+```json
+{
+  "audioMixerDescription": {
+    "name": "Headset (Bose QC35 II Hands-Free AG Audio)",
+    "vendor": "Unknown Vendor",
+    "description": "Direct Audio Device: DirectSound Playback",
+    "version": "Unknown Version",
+    "supportedAudioMixerTypes": [
+      "SOURCE"
+    ]
+  },
+  "audioFormat": {
+    "encoding": {
+      "name": "PCM_SIGNED"
+    },
+    "sampleRate": -1.0,
+    "sampleSizeInBits": 16,
+    "channels": 1,
+    "frameSize": 2,
+    "frameRate": -1.0,
+    "bigEndian": true
+  },
+  "audioMixerTypeForFormat": "SOURCE",
+  "dataLineName": "interface SourceDataLine supporting 8 audio formats, and buffers of at least 32 bytes"
+}
+```
+
+The actual HTTP request:
+
+```shell
+curl -X POST -H "Content-Type: application/json" "localhost:8080/audio-mixers" -d @bose-output-hands-free.json
+```
+
+Which returns:
+
+```json
+{"audioMixerId":502}
+```
+
+Now we can simultaneously play audio through the microphone and our speakers:
+
+```shell
+curl -X POST -H "Content-Type:multipart/form-data" localhost:8080/sound-board/play -F "audioFile=@evil-laugh.wav" -F "playAudioFileToSourceAndSinkRequest={\"sinkId\": 1, \"sourceId\":502};type=application/json"
+```
+
+* `1` is the ID our sink (the Bose headset microphone)
+* `502` is the ID of the source we just set up (the Bose headset output)
 
 ## API
 

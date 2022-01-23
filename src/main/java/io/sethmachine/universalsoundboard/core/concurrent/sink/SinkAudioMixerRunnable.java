@@ -96,7 +96,6 @@ public class SinkAudioMixerRunnable implements Runnable {
       for (SourceDataLine sourceDataLine : sourceDataLines) {
         sourceDataLine.write(data, 0, numBytesRead);
         LOG.debug("Wrote {} bytes to source", numBytesRead);
-        LOG.info("SOURCE DATA LINE: {}", sourceDataLine);
       }
     }
     // clean up if we ever stop

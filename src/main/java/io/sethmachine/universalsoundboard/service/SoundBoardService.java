@@ -11,10 +11,12 @@ import io.sethmachine.universalsoundboard.core.concurrent.source.PlayAudioToSour
 import io.sethmachine.universalsoundboard.core.model.audiomixers.SinkAudioMixer;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.SourceAudioMixer;
 import io.sethmachine.universalsoundboard.core.model.concurrent.source.AudioFileStream;
+import io.sethmachine.universalsoundboard.core.util.audiomixer.AudioFormatUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.ws.rs.NotAllowedException;
 import javax.ws.rs.NotFoundException;
@@ -58,6 +60,7 @@ public class SoundBoardService {
   ) {
     SourceAudioMixer source = audioMixersService
       .getSourceAudioMixer(sourceId)
+      .map(AudioFormatUtil::reformatSourceAudioMixerFormatIfItHasUnspecifiedValues)
       .orElseThrow(() ->
         new NotFoundException(
           String.format(
@@ -77,9 +80,11 @@ public class SoundBoardService {
         )
       );
 
-    List<SourceAudioMixer> sources = audioMixerWiringService.getSourceMixersFromWirings(
-      audioMixerWiringService.getSinkWirings(sinkId)
-    );
+    List<SourceAudioMixer> sources = audioMixerWiringService
+      .getSourceMixersFromWirings(audioMixerWiringService.getSinkWirings(sinkId))
+      .stream()
+      .map(AudioFormatUtil::reformatSourceAudioMixerFormatIfItHasUnspecifiedValues)
+      .collect(Collectors.toList());
     if (sources.isEmpty()) {
       throw new NotAllowedException(
         String.format(
