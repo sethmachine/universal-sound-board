@@ -1,3 +1,7 @@
+# USB specific development files
+usb-examples/
+usbDerbyDB/
+
 # Compiled class file
 *.class
 

@@ -2,6 +2,7 @@ package io.sethmachine.universalsoundboard.core.util.audiomixer;
 
 import static javax.sound.sampled.AudioSystem.NOT_SPECIFIED;
 
+import io.sethmachine.universalsoundboard.core.model.audiomixers.SourceAudioMixer;
 import io.sethmachine.universalsoundboard.core.model.concurrent.source.AudioFileStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -21,6 +22,18 @@ public class AudioFormatUtil {
   private static final Logger LOG = LoggerFactory.getLogger(AudioFormatUtil.class);
   private static final float DEFAULT_SAMPLE_RATE_IF_UNSPECIFIED = 48000;
   private static final float DEFAULT_FRAME_RATE_IF_UNSPECIFIED = 48000;
+
+  public static SourceAudioMixer reformatSourceAudioMixerFormatIfItHasUnspecifiedValues(
+    SourceAudioMixer sourceAudioMixer
+  ) {
+    return SourceAudioMixer
+      .builder()
+      .from(sourceAudioMixer)
+      .setAudioFormat(
+        handleUnspecifiedValuesInAudioFormat(sourceAudioMixer.getAudioFormat())
+      )
+      .build();
+  }
 
   public static AudioFileStream createAudioFileStream(
     InputStream inputStream,
@@ -86,7 +99,9 @@ public class AudioFormatUtil {
     }
   }
 
-  public static AudioFormat handleUnspecifiedAudioFormat(AudioFormat audioFormat) {
+  public static AudioFormat handleUnspecifiedValuesInAudioFormat(
+    AudioFormat audioFormat
+  ) {
     Encoding encoding = audioFormat.getEncoding();
     float sampleRate = audioFormat.getSampleRate();
     int sampleSizeInBits = audioFormat.getSampleSizeInBits();

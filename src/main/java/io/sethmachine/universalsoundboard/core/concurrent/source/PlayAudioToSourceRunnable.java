@@ -6,6 +6,7 @@ import com.google.inject.assistedinject.Assisted;
 import com.google.inject.name.Named;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.SourceAudioMixer;
 import io.sethmachine.universalsoundboard.core.model.concurrent.source.AudioFileStream;
+import io.sethmachine.universalsoundboard.core.util.audiomixer.AudioFormatUtil;
 import java.io.IOException;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
@@ -75,13 +76,12 @@ public class PlayAudioToSourceRunnable implements Runnable {
     int numBytesToRead = sourceDataLine.getBufferSize() / 5;
     int total = 0;
 
-    // docs say to NEVER rely on available() for total bytes in a stream
-    // so we should compute this elsewhere!
+    // docs say to NEVER rely on available() for total bytes in a stream, so compute this elsewhere
     int totalToRead = audioFileStream.getTotalBytes();
 
     while (total < totalToRead) {
       numBytesRead = audioFileStream.getAudioInputStream().read(data, 0, numBytesToRead);
-      LOG.trace("Read {} bytes from {}", numBytesRead, audioFileStream.getFilename());
+      LOG.info("Read {} bytes from {}", numBytesRead, audioFileStream.getFilename());
       if (numBytesRead == -1) break;
       total += numBytesRead;
       sourceDataLine.write(data, 0, numBytesRead);
