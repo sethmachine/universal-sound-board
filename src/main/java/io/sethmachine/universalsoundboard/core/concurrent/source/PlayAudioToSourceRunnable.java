@@ -81,7 +81,7 @@ public class PlayAudioToSourceRunnable implements Runnable {
 
     while (total < totalToRead) {
       numBytesRead = audioFileStream.getAudioInputStream().read(data, 0, numBytesToRead);
-      LOG.info("Read {} bytes from {}", numBytesRead, audioFileStream.getFilename());
+      LOG.trace("Read {} bytes from {}", numBytesRead, audioFileStream.getFilename());
       if (numBytesRead == -1) break;
       total += numBytesRead;
       sourceDataLine.write(data, 0, numBytesRead);
