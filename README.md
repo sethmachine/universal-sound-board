@@ -55,9 +55,9 @@ The usage guide here shows how to use Virtual Audio Cable with a microphone from
 In the guide we'll complete these steps:
 
 * Choose a microphone, its audio format, and persist it to the database 
-* Choose the Virtual Audio Cable Output, its audio format, and persist it to the database
-* Wire the microphone to the Virtual Audio Cable Output
-* Configure Discord to use Virtual Audio Cable Input as the microphone
+* Choose the Virtual Audio Cable Input, its audio format, and persist it to the database
+* Wire the microphone to the Virtual Audio Cable Input
+* Configure Discord to use Virtual Audio Cable Output as the microphone
 * Play a sound file that simultaneously plays on your speakers and through the microphone on Discord
 
 ### Requirements
@@ -267,7 +267,7 @@ Which should return a response from the server:
 {"audioMixerId":1}
 ```
 
-This audio mixer ID will be needed to reference the sink we've just setup (which is the Bose Headset in this case with the particular audio format we chose).  
+This audio mixer ID will be needed to reference the sink we've just setup (which is the Bose Headset in this case with the particular audio format we chose).  Note it is possible you could get a different ID back.  
 
 We can double-check the sink has been persisted through another request to the server which lists all installed audio devices.  Note that installed devices here refers to audio devices setup with the server (separate from the actual audio devices installed on your computer).  
 
@@ -311,7 +311,7 @@ Which should return:
 
 ### Setting up a source
 
-We will repeat [the same steps as we did to setup a sink](#setting-up-a-sink), except this time it will be for the Virtual Audio Cable as a source (this is where the physical microphone will send its input).  
+We will repeat [the same steps as we did to set up a sink](#setting-up-a-sink), except this time it will be for the Virtual Audio Cable as a source (this is where the physical microphone will send its input).  
 
 
 List all the sources and view in prettified JSON:
@@ -475,7 +475,7 @@ Which should return a response from the server:
 {"audioMixerId":101}
 ```
 
-This audio mixer ID will be needed to continue reference the source we've just setup.  
+This audio mixer ID will be needed to continue reference the source we've just setup.  Again it is possible you could get a different ID assigned to the source.  
 
 We can double-check the source has been persisted through another request to the server which lists all installed audio devices.  Note that installed devices here refers to audio devices setup with the server (separate from the actual audio devices installed on your computer).
 
@@ -483,7 +483,7 @@ We can double-check the source has been persisted through another request to the
 curl -X GET "localhost:8080/audio-mixers" | python -m json.tool
 ```
 
-Which should return both the sink and source:
+Which should now return both the sink and source:
 
 ```json
 {
@@ -561,7 +561,7 @@ This should return no response (the HTTP response code should be a 204).  We can
 curl -X GET "localhost:8080/audio-mixer-wiring" | python -m json.tool
 ```
 
-Which confirm the wiring exists:
+The JSON response should look like this:
 
 ```json
 {
@@ -635,7 +635,7 @@ And Discord should no longer detect any voice activity.  To resume, simpy run th
 
 Now that we've confirmed our microphone is routing audio to our voice chat application (Discord in this example), we can begin playing audio files through the microphone as well.  The net effect is that any users on the other end will hear the audio file as if it's playing through your microphone.  
 
-I've provided an example audio file called [evil-laugh.wav](examples/evil-laugh.wav) to test this out.
+We can test this out with an example audio file called [evil-laugh.wav](examples/evil-laugh.wav) to test this out.  Audio file is provided from: https://freesound.org/people/ZyryTSounds/sounds/219110/
 
 The following command will play `evil-laugh.wav` as if it came through your microphone.  Note you'll need to reference the ID of the source we set up in previous steps, which is 101 in this example but could be a different value on your machine.  
 
