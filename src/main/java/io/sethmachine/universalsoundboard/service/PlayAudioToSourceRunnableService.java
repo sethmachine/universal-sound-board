@@ -8,6 +8,7 @@ import io.sethmachine.universalsoundboard.core.concurrent.source.PlayAudioToSour
 import io.sethmachine.universalsoundboard.core.concurrent.source.PlayAudioToSourceRunnableFactory;
 import io.sethmachine.universalsoundboard.core.model.audiomixers.SourceAudioMixer;
 import io.sethmachine.universalsoundboard.core.model.concurrent.source.AudioFileStream;
+import io.sethmachine.universalsoundboard.core.util.audiomixer.AudioFormatUtil;
 import java.io.InputStream;
 import java.util.concurrent.ThreadPoolExecutor;
 import javax.inject.Inject;
@@ -50,6 +51,7 @@ public class PlayAudioToSourceRunnableService {
   ) {
     SourceAudioMixer source = audioMixersService
       .getSourceAudioMixer(sourceId)
+      .map(AudioFormatUtil::reformatSourceAudioMixerFormatIfItHasUnspecifiedValues)
       .orElseThrow(() ->
         new NotFoundException(
           String.format(

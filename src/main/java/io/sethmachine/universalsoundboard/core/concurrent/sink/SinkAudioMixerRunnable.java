@@ -1,6 +1,6 @@
 package io.sethmachine.universalsoundboard.core.concurrent.sink;
 
-import static io.sethmachine.universalsoundboard.core.util.audiomixer.AudioFormatUtil.handleUnspecifiedAudioFormat;
+import static io.sethmachine.universalsoundboard.core.util.audiomixer.AudioFormatUtil.handleUnspecifiedValuesInAudioFormat;
 
 import com.google.common.base.Predicates;
 import com.google.common.eventbus.EventBus;
@@ -71,7 +71,9 @@ public class SinkAudioMixerRunnable implements Runnable {
       sink.getMixer().getMixerInfo()
     );
 
-    AudioFormat sinkAudioFormat = handleUnspecifiedAudioFormat(sink.getAudioFormat());
+    AudioFormat sinkAudioFormat = handleUnspecifiedValuesInAudioFormat(
+      sink.getAudioFormat()
+    );
 
     targetDataLine.open(sinkAudioFormat);
     targetDataLine.start();
