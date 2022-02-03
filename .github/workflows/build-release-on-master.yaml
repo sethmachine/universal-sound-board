@@ -1,0 +1,28 @@
+name: Java CI
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
+      - name: Build with Maven
+        run: mvn --batch-mode --update-snapshots verify
+      - run: mkdir release/ && cp target/UniversalSoundBoard*-SNAPSHOT.jar release/
+      - run: cp universal-sound-board.yml release/
+      - run: cp README.md release/
+      - run: echo ${{ github.sha }} > github-sha.txt && cp github-sha.txt release/
+      - uses: actions/upload-artifact@v2
+        with:
+          name: UniversalSoundBoard
+          path: release
