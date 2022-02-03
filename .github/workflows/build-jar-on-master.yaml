@@ -2,7 +2,7 @@ name: Java CI
 
 on:
   push:
-    branches: [master]
+    branches: [USB-25-automatic-jar-build]
 
 jobs:
   build:
