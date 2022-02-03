@@ -1,6 +1,8 @@
 name: Java CI
 
-on: [push]
+on:
+  push:
+    branches: [USB-25-automatic-jar-build]
 
 jobs:
   build:
@@ -16,7 +18,8 @@ jobs:
           cache: maven
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
-      - run: mkdir staging && cp target/UniversalSoundBoard*-SNAPSHOT.jar staging
+      - run: mkdir staging/ && cp target/UniversalSoundBoard*-SNAPSHOT.jar staging/
+      - run: cp universal-sound-board.yml staging/
       - uses: actions/upload-artifact@v2
         with:
           name: UniversalSoundBoard
