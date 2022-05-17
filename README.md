@@ -2,13 +2,17 @@
 
 ![Universal Sound Board Diagram](examples/USBD-diagram-revised-2022-05-16.jpg)
 
-Ever wondered how to play audio through your microphone?  Universal Sound Board allows you to do just that!  
+Ever wonder how to play audio through your microphone?  Universal Sound Board allows you to do just that!  
 
 UniversalSoundBoard (USBD) is a Java application that allows for playing audio clips through your microphone with a virtual audio device.  Because USBD is written in Java, it can be run anywhere (tested on Windows and macOS).  USBD is a standalone application, so it will work with any voice chat application like Discord or Zoom.    
 
 More specifically, USBD allows the wiring of input audio devices to output audio devices (audio wiring).  One example is sending physical microphone inputs to a virtual audio device, which effectively turns the virtual audio device into a microphone.  At the same time, you can tell USBD to play an audio file to a virtual audio device, which results in others hearing the audio file as if it were played on their computer.  
 
-USBD's interface is through HTTP requests, so it can be integrated with any language or framework.  USBD provides a high level abstraction of the [Java Sound API](https://docs.oracle.com/javase/tutorial/sound/) to simplify programming sound board like applications.    
+USBD's interface is through HTTP requests, so it can be integrated with any language or framework.  USBD provides a high level abstraction of the [Java Sound API](https://docs.oracle.com/javase/tutorial/sound/) to simplify programming sound board like applications.
+
+For a high level overview of UniveralSoundBoard, why I created it, and how it works, check out my blog article describing it in detail.  
+
+Blog article: https://www.sethmachine.io/2022/05/17/universal-sound-board/
 
 ### Stack
 
