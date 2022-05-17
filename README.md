@@ -1,7 +1,5 @@
 # UniversalSoundBoard
 
-[comment]: <> (Diagram/image demonstrating what UniversalSoundBoard is)
-
 ![Universal Sound Board Diagram](examples/USBD-diagram-revised-2022-05-16.jpg)
 
 Ever wondered how to play audio through your microphone?  Universal Sound Board allows you to do just that!  
