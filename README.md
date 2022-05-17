@@ -2,13 +2,15 @@
 
 [comment]: <> (Diagram/image demonstrating what UniversalSoundBoard is)
 
+![Universal Sound Board Diagram](examples/USBD-diagram-revised-2022-05-16.jpg)
+
 Ever wondered how to play audio through your microphone?  Universal Sound Board allows you to do just that!  
 
-UniversalSoundBoard (USB) is a Java application that allows for playing audio clips through your microphone with a virtual audio device.  Because USB is written in Java, it can be run anywhere (tested on Windows and macOS).  USB is a standalone application, so it will work with any voice chat application like Discord or Zoom.    
+UniversalSoundBoard (USBD) is a Java application that allows for playing audio clips through your microphone with a virtual audio device.  Because USBD is written in Java, it can be run anywhere (tested on Windows and macOS).  USBD is a standalone application, so it will work with any voice chat application like Discord or Zoom.    
 
-More specifically, USB allows the wiring of input audio devices to output audio devices (audio wiring).  One example is sending physical microphone inputs to a virtual audio device, which effectively turns the virtual audio device into a microphone.  At the same time, you can tell USB to play an audio file to a virtual audio device, which results in others hearing the audio file as if it were played on their computer.  
+More specifically, USBD allows the wiring of input audio devices to output audio devices (audio wiring).  One example is sending physical microphone inputs to a virtual audio device, which effectively turns the virtual audio device into a microphone.  At the same time, you can tell USBD to play an audio file to a virtual audio device, which results in others hearing the audio file as if it were played on their computer.  
 
-USB's interface is through HTTP requests, so it can be integrated with any language or framework.  USB provides a high level abstraction of the [Java Sound API](https://docs.oracle.com/javase/tutorial/sound/) to simplify programming sound board like applications.    
+USBD's interface is through HTTP requests, so it can be integrated with any language or framework.  USBD provides a high level abstraction of the [Java Sound API](https://docs.oracle.com/javase/tutorial/sound/) to simplify programming sound board like applications.    
 
 ### Stack
 
@@ -28,13 +30,13 @@ UniversalSoundBoard is a standalone Java application that can be run with the co
 
 * Windows or macOS operating system (not tested on Linux)
 * Java 11 runtime
-* Java 11 development kit (if you want to build USB from source)
+* Java 11 development kit (if you want to build USBD from source)
 * Virtual audio device that routes output to input (technically optional)
 
 
 ### Virtual Audio Devices
 
-The following virtual audio devices have been successfully tested with USB to play audio through the microphone. You will need to install these separately in order to use them with USB. You only need one them, e.g. macOS has both Blackhole and Virtual Audio Cable, but you only need to install one of these.  
+The following virtual audio devices have been successfully tested with USBD to play audio through the microphone. You will need to install these separately in order to use them with USBD. You only need one them, e.g. macOS has both Blackhole and Virtual Audio Cable, but you only need to install one of these.  
 
 #### Windows
 * [Virtual Audio Cable](https://vb-audio.com/Cable)
@@ -55,7 +57,7 @@ This has been tested with [Apache Maven](https://maven.apache.org/) 3.8.1 and an
 
 ## Usage Guide
 
-This guide shows how to set up UniversalSoundBoard (USB) on Windows.  I'll use the following audio devices but you can substitute for your own physical microphone and speakers:
+This guide shows how to set up UniversalSoundBoard (USBD) on Windows.  I'll use the following audio devices but you can substitute for your own physical microphone and speakers:
 
 * Bose Headset microphone (substitute with whatever physical microphone you are using)
 * Bose Headset output (substitute with whatever physical speakers you are using)
@@ -75,7 +77,7 @@ In the guide we'll complete these steps:
 
 * Java 11 runtime
 * Access to a terminal or command line program
-* An HTTP client to interact with USB, e.g. [curl](https://curl.se/)
+* An HTTP client to interact with USBD, e.g. [curl](https://curl.se/)
 * [Virtual Audio Cable](https://vb-audio.com/Cable)
 * (Optional) [Python](https://www.python.org/downloads/) or another command line program to pretty print JSON output
 
@@ -83,7 +85,7 @@ If you choose not to use Python, omit any `| python -m json.tool` from all comma
 
 ### Running the server
 
-UniversalSoundBoard is started like any Dropwizard application from the command line.  USB runs as a web server in the background as it routes audio from one device to another.  
+UniversalSoundBoard is started like any Dropwizard application from the command line.  USBD runs as a web server in the background as it routes audio from one device to another.  
 
 You'll need a compiled JAR to run the server.  If necessary, follow the [build instructions to create the JAR](#building).  These examples will all use [curl](https://curl.se/) to interact with the UniversalSoundBoard server.   
 
@@ -131,7 +133,7 @@ Most audio devices will either be a sink or a source but some can act as both (e
 
 ### Setting up a sink
 
-The steps here allow us to set up a sink (audio input), so that USB can begin capturing your microphone input and route it to a virtual audio device.  This is necessary so that we can simultaneously send microphone input and audio files in a single audio input stream to Discord, Zoom, etc.  
+The steps here allow us to set up a sink (audio input), so that USBD can begin capturing your microphone input and route it to a virtual audio device.  This is necessary so that we can simultaneously send microphone input and audio files in a single audio input stream to Discord, Zoom, etc.  
 
 The server provides an API to [list all installed audio devices](#list-installed-audio-devices), from which we can choose a sink and source.  In this next step, we will list out all sinks, and then choose a physical microphone as a sink.  Make sure the server is running while issuing these commands.  
 
@@ -249,7 +251,7 @@ Here is the output (truncated due to its verbosity, as it is every audio format 
 ```
 Both of these formats have what appears to be a nonsensical `-1.0` as the sample rate and the frame rate.  This value is [AudioSystem.NOT_SPECIFIED](https://docs.oracle.com/javase/7/docs/api/javax/sound/sampled/AudioSystem.html#NOT_SPECIFIED), which means to substitute it with any sensible value.  The server defaults to `48000` for any unspecified sample or frame rates, so the choice between formats will not matter much.    
 
-Finally, we will persist the sink to USB's database in order to wire it up later Virtual Audio Cable.  We will need to copy the entire JSON of one of the audio formats (any element of the JSON response).  Since each element is quite verbose, we can save it to a JSON file and then tell curl to use that file as the JSON body to the server.  I'll save the first audio format to `bose-audio-format.json` which should look like:
+Finally, we will persist the sink to USBD's database in order to wire it up later Virtual Audio Cable.  We will need to copy the entire JSON of one of the audio formats (any element of the JSON response).  Since each element is quite verbose, we can save it to a JSON file and then tell curl to use that file as the JSON body to the server.  I'll save the first audio format to `bose-audio-format.json` which should look like:
 
 ```json
     {
@@ -334,7 +336,7 @@ Which should return:
 
 ### Setting up a source
 
-The steps here allow us to set up a source (audio output), so that USB has a place to send captured microphone input to.  This is necessary so that we can simultaneously send microphone input and audio files in a single audio input stream to Discord, Zoom, etc.
+The steps here allow us to set up a source (audio output), so that USBD has a place to send captured microphone input to.  This is necessary so that we can simultaneously send microphone input and audio files in a single audio input stream to Discord, Zoom, etc.
 
 We will repeat [the same steps as we did to set up a sink](#setting-up-a-sink), except this time it will be for the Virtual Audio Cable as a source (this is where the physical microphone will send its input).  
 
@@ -488,7 +490,7 @@ As in the previous step, we'll save the first format to a JSON file called `vb-a
 }
 ```
 
-With a full description of how we are using the Virtual Audio Cable as a source, we can save it to the USB database so that it can be wired to our sink:
+With a full description of how we are using the Virtual Audio Cable as a source, we can save it to the USBD database so that it can be wired to our sink:
 
 ```shell
 curl -X POST -H "Content-Type: application/json" "localhost:8080/audio-mixers" -d @vb-audio-cable-input-format.json  
@@ -692,7 +694,7 @@ Another option to tune is Discord's sensitivity to voice activity.  This is the 
 
 ### Playing a sound simultaneously to microphone and speakers
 
-We're now able to use our microphone normally while also being able to play audio files as if they came through the microphone.  However, on our end we won't hear the sound we are playing, only those on the other end of the voice chat application.  The USB server provides an API to do just that, so both you and your audience will hear the same sound effect being played:
+We're now able to use our microphone normally while also being able to play audio files as if they came through the microphone.  However, on our end we won't hear the sound we are playing, only those on the other end of the voice chat application.  The USBD server provides an API to do just that, so both you and your audience will hear the same sound effect being played:
 
 ```shell
 curl -X POST -H "Content-Type:multipart/form-data" localhost:8080/sound-board/play -F "audioFile=@evil-laugh.wav" -F "playAudioFileToSourceAndSinkRequest={\"sinkId\": YOUR_SINK_ID, \"sourceId\":YOUR_AUDIO_OUTPUT_DEVICE_ID};type=application/json" 
@@ -794,7 +796,7 @@ Note that audio devices that support both interfaces will appear in all listings
 
 ### List all supported audio formats for a single device 
 
-Lists all supported audio formats for a single device.  Each element in the list output is used as input to install the audio device to USB so it can be wired to another audio device.  
+Lists all supported audio formats for a single device.  Each element in the list output is used as input to install the audio device to USBD so it can be wired to another audio device.  
 
 #### Request
 ```shell
@@ -837,7 +839,7 @@ Note that audio devices that support both interfaces will appear in all listings
 
 ### What makes this "universal"?
 
-UniversalSoundBoard (USB) is named such as it is able to run anywhere due to it being a Java application.  In addition, it has no knowledge or awareness of actual voice chat apps like Zoom or Discord, as USB is not a plugin.  One simply needs to hook up the right audio devices and then USB can be used anywhere. Hence it is a universal sound board, as it is both app and operating system agnostic.  
+UniversalSoundBoard (USBD) is named such as it is able to run anywhere due to it being a Java application.  In addition, it has no knowledge or awareness of actual voice chat apps like Zoom or Discord, as USBD is not a plugin.  One simply needs to hook up the right audio devices and then USBD can be used anywhere. Hence it is a universal sound board, as it is both app and operating system agnostic.  
 
 ### Why do I have to download a 3rd party virtual audio device?
 
@@ -845,7 +847,7 @@ Unfortunately writing virtual audio devices for macOS and Windows is still a hig
 
 ### Why is there no graphical user interface?
 
-This project specifically focuses on the programming the sound rather than being an all-in-one application.  Anyone is welcome to build a GUI on top of the USB API.  In fact, one of the goals of this project is to lower the barrier for entry for programming sound so developers can focus on the app rather than the idiosyncrasies of programming audio.   
+This project specifically focuses on the programming the sound rather than being an all-in-one application.  Anyone is welcome to build a GUI on top of the USBD API.  In fact, one of the goals of this project is to lower the barrier for entry for programming sound so developers can focus on the app rather than the idiosyncrasies of programming audio.   
 
 ### How do I change the location of the embedded database?
 
