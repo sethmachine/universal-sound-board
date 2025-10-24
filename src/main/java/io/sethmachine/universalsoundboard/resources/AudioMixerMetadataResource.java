@@ -1,11 +1,7 @@
 package io.sethmachine.universalsoundboard.resources;
 
-import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.AudioMixerDescriptionsResponse;
-import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.SingleAudioMixerDescriptionAndFormatsResponse;
-import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerType;
-import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.query.AudioMixerMetadataQuery;
-import io.sethmachine.universalsoundboard.service.api.AudioMixerMetadataApiService;
 import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -13,6 +9,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+
+import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.AudioMixerDescriptionsResponse;
+import io.sethmachine.universalsoundboard.core.model.api.v1.audiomixers.metadata.SingleAudioMixerDescriptionAndFormatsResponse;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.AudioMixerType;
+import io.sethmachine.universalsoundboard.core.model.audiomixers.metadata.query.AudioMixerMetadataQuery;
+import io.sethmachine.universalsoundboard.service.api.AudioMixerMetadataApiService;
 
 @Path("/audio-mixer-metadata")
 @Produces(MediaType.APPLICATION_JSON)
