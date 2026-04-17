@@ -1,0 +1,25 @@
+{
+  "audioMixerDescription": {
+    "name": "BlackHole 2ch",
+    "vendor": "Existential Audio Inc.",
+    "description": "Direct Audio Device: BlackHole 2ch",
+    "version": "Unknown Version",
+    "supportedAudioMixerTypes": [
+      "SINK",
+      "SOURCE"
+    ]
+  },
+  "audioFormat": {
+    "encoding": {
+      "name": "PCM_SIGNED"
+    },
+    "sampleRate": 44100.0,
+    "sampleSizeInBits": 16,
+    "channels": 2,
+    "frameSize": 4,
+    "frameRate": 44100.0,
+    "bigEndian": true
+  },
+  "audioMixerTypeForFormat": "SOURCE",
+  "dataLineName": "interface SourceDataLine supporting 14 audio formats, and buffers of at least 32 bytes"
+}

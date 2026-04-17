@@ -1,0 +1,24 @@
+{
+  "audioMixerDescription": {
+    "name": "MacBook Pro Microphone",
+    "vendor": "Apple Inc.",
+    "description": "Direct Audio Device: MacBook Pro Microphone",
+    "version": "Unknown Version",
+    "supportedAudioMixerTypes": [
+      "SINK"
+    ]
+  },
+  "audioFormat": {
+    "encoding": {
+      "name": "PCM_SIGNED"
+    },
+    "sampleRate": 48000.0,
+    "sampleSizeInBits": 16,
+    "channels": 1,
+    "frameSize": 2,
+    "frameRate": 48000.0,
+    "bigEndian": true
+  },
+  "audioMixerTypeForFormat": "SINK",
+  "dataLineName": "interface TargetDataLine supporting 8 audio formats, and buffers of at least 32 bytes"
+}
